@@ -3,7 +3,7 @@ import { addMatchers } from "../test/jasmine-matchers";
 import {
     imuter,
     object_assign, object_delete, object_set,
-    array_delete, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
+    array_delete, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
     write, writeValue, removeValue
 } from "./imuter";
 
@@ -454,7 +454,7 @@ describe("imuter", function() {
             expect(a).toBe(i);
         });
 
-        it("should remove the value like a plain delete", function() {
+        it("should delete the value like a plain delete", function() {
             expect(array_delete([0, 1, 2, undefined], 2)).toEqual([0, 1, undefined, undefined]);
             expect(array_delete([0, 1, 2, undefined], 1)).toEqual([0, undefined, 2, undefined]);
         });
@@ -470,6 +470,34 @@ describe("imuter", function() {
 
         it("should support array of frozen objects", function() {
             array_delete([imuter({})], 0);
+        });
+    });
+
+    describe("array_remove", function() {
+        it("should return a new frozen array", function() {
+            const i = [0];
+            const a = array_remove(i, 0);
+            expect(a).toBeFrozen();
+            expect(a).not.toBe(i);
+        });
+
+        it("should be a noop when no change", function() {
+            const i = [0];
+            const a = array_remove(i, 1);
+            expect(a).toBe(i);
+        });
+
+        it("should remove the value", function() {
+            expect(array_remove([0, 1, 2], 2)).toEqual([0, 1]);
+            expect(array_remove([0, 1, 2], 1)).toEqual([0, 2]);
+        });
+
+        it("should support already-frozen arrays", function() {
+            array_remove(imuter([0, 1, 2]), 1);
+        });
+
+        it("should support array of frozen objects", function() {
+            array_remove([imuter({})], 0);
         });
     });
 

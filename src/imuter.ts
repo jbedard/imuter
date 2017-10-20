@@ -152,6 +152,16 @@ export function array_delete<T = any>(arr: ReadonlyArrayInput<T>, index: number)
     return array_set<T>(arr, index, DELETE_VALUE);
 }
 
+export function array_remove<T = any>(arr: ReadonlyArrayInput<T>, index: number): ReadonlyArray<T> {
+    if (arr.length <= index) {
+        return arr;
+    }
+
+    const newArr = arr.slice();
+    newArr.splice(index, 1);
+    return shallowFreeze(newArr);
+}
+
 export function array_push<T = any>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
     deepFreeze(values);
 
