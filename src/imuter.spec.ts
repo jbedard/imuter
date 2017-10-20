@@ -481,15 +481,25 @@ describe("imuter", function() {
             expect(a).not.toBe(i);
         });
 
-        it("should be a noop when no change", function() {
+        it("should be a noop when no change (index)", function() {
             const i = [0];
             const a = array_remove(i, 1);
+            expect(a).toBe(i);
+        });
+
+        it("should be a noop when no change (deleteCount)", function() {
+            const i = [0];
+            const a = array_remove(i, 0, 0);
             expect(a).toBe(i);
         });
 
         it("should remove the value", function() {
             expect(array_remove([0, 1, 2], 2)).toEqual([0, 1]);
             expect(array_remove([0, 1, 2], 1)).toEqual([0, 2]);
+        });
+
+        it("should remove deleteCount values", function() {
+            expect(array_remove([0, 1, 2], 1, 2)).toEqual([0]);
         });
 
         it("should support already-frozen arrays", function() {

@@ -152,13 +152,13 @@ export function array_delete<T = any>(arr: ReadonlyArrayInput<T>, index: number)
     return array_set<T>(arr, index, DELETE_VALUE);
 }
 
-export function array_remove<T = any>(arr: ReadonlyArrayInput<T>, index: number): ReadonlyArray<T> {
-    if (arr.length <= index) {
+export function array_remove<T = any>(arr: ReadonlyArrayInput<T>, index: number, deleteCount: number = 1): ReadonlyArray<T> {
+    if (arr.length <= index || deleteCount === 0) {
         return arr;
     }
 
     const newArr = arr.slice();
-    newArr.splice(index, 1);
+    newArr.splice(index, deleteCount);
     return shallowFreeze(newArr);
 }
 
