@@ -98,18 +98,18 @@ export const imuter = deepFreeze;
 
 
 const DELETE_VALUE: any = Object.freeze({});
-
+const REMOVE_VALUE: any = Object.freeze({});
 
 // Objects
 
 export function object_set<T>(obj: ReadonlyObjectInput<T> | T, prop: keyof T, value: any): Readonly<T> {
-    if ((value === DELETE_VALUE) ? !(prop in <any>obj) : obj[prop] === value) {
+    if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(prop in <any>obj) : obj[prop] === value) {
         return obj;
     }
 
     const newObj: T = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
 
-    if (value === DELETE_VALUE) {
+    if (value === DELETE_VALUE || value === REMOVE_VALUE) {
         delete newObj[prop];
     }
     else {
@@ -134,13 +134,16 @@ export function object_assign(a: any, b: any, ...sources: any[]): Readonly<any> 
 // Arrays
 
 export function array_set<T = any>(arr: ReadonlyArrayInput<T>, index: number, value: T): ReadonlyArray<T> {
-    if ((value === DELETE_VALUE) ? !(index in arr) : arr[index] === value) {
+    if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(index in arr) : arr[index] === value) {
         return arr;
     }
 
     const newArr = arr.slice();
     if (value === DELETE_VALUE) {
         delete newArr[index];
+    }
+    else if (value === REMOVE_VALUE) {
+        newArr.splice(index, 1);
     }
     else {
         newArr[index] = deepFreeze(value);
@@ -278,5 +281,5 @@ export function writeValue(data: any, path: Array<string | number>, value: any):
 export function removeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number): ReadonlyArray<T>;
 export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T): Readonly<T>;
 export function removeValue(data: any, path: Array<string | number>) {
-    return write(data, path, DELETE_VALUE);
+    return write(data, path, REMOVE_VALUE);
 }

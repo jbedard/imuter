@@ -919,7 +919,7 @@ describe("imuter", function() {
         });
     });
 
-    describe("remove", function() {
+    describe("removeValue", function() {
         it("should return a new frozen object", function() {
             const o = {p: 1};
             const o2 = removeValue(o, "p");
@@ -1049,6 +1049,9 @@ describe("imuter", function() {
 
             const o3 = removeValue(o, ["f", "s", 10]);
             expect(o3).toBe(o);
+
+            const o4 = removeValue(o, ["f", "s", "foo"]);
+            expect(o4).toBe(o);
         });
 
         it("should fail if the specified path does not exist", function() {
@@ -1090,6 +1093,14 @@ describe("imuter", function() {
             expect(o2[0].f[1]).not.toBe(o[0].f[1]);
             expect((o2[0].f[1] as any).s.t).not.toBe((o[0].f[1] as any).s.t);
             expect(0 in (o2[0].f[1] as any).s.t).toBe(false);
+        });
+
+        it("should splice out array values", function() {
+            const o = {a: [0, 1, 2]};
+            const o2 = removeValue(o, ["a", 1]);
+
+            expect(o2.a.length).toBe(2);
+            expect(o2.a[1]).toBe(2);
         });
     });
 });
