@@ -89,8 +89,8 @@ function valueFn<T>(v: T): () => T { return function() { return v; }; }
 //The signature of recursiveFreeze is nicer then Object.freeze so use that
 export type Freezer = typeof recursiveFreeze;
 
-export const shallowFreeze: Freezer = FREEZING_ENABLED ? Object.freeze   : identity;
-export const deepFreeze: Freezer    = FREEZING_ENABLED ? recursiveFreeze : identity;
+const shallowFreeze: Freezer = FREEZING_ENABLED ? Object.freeze   : identity;
+const deepFreeze: Freezer    = FREEZING_ENABLED ? recursiveFreeze : identity;
 
 export const imuter = deepFreeze;
 
