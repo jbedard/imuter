@@ -1,0 +1,9 @@
+coverage/
+node_modules/
+dist/*.spec.*
+dist/jasmine-.*
+src/*.spec.*
+karma.conf.js
+tsconfig.json
+tslint.json
+yarn.lock

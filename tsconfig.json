@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "esnext",
+        "moduleResolution": "node",
+
+        "lib": ["es2015"],
+
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "removeComments": false,
+        "sourceMap": true,
+        "declaration": true,
+        "diagnostics": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "importHelpers": true,
+        "noEmitHelpers": true,
+        "noEmitOnError": true,
+
+        "outDir": "dist",
+
+        "noImplicitReturns": true,
+        "strict": true
+    },
+
+    "files": [
+        "src/imuter.ts"
+    ],
+
+    "exclude": [
+        "coverage",
+        "dist",
+        "node_modules"
+    ]
+}
