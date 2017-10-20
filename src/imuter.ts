@@ -18,21 +18,17 @@ export function recursiveFreeze<T = string>(value: string): string;
 export function recursiveFreeze<T = boolean>(value: boolean): boolean;
 export function recursiveFreeze<T = symbol>(value: symbol): symbol;
 export function recursiveFreeze(value: any) {
-    //null/undefined
-    if (value == null) {
-        return value;
-    }
-
     //Primitives
     switch (typeof value) {
         case "number":
         case "string":
         case "boolean":
         case "symbol":
+        case "undefined":
             return value;
     }
 
-    //Already frozen, assume it was deep frozen
+    //Already frozen or already immutable, assume it was deep frozen
     if (Object.isFrozen(value)) {
         return value;
     }
@@ -73,13 +69,11 @@ export function recursiveFreeze(value: any) {
     Object.freeze(value);
 
     if (Array.isArray(value)) {
-        //Recurse using for-of
         for (const entry of value) {
             recursiveFreeze(entry);
         }
     }
     else {
-        //Recurse using for-in
         for (const key in value) {
             recursiveFreeze(value[key]);
         }
