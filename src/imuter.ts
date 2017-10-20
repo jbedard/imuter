@@ -11,13 +11,15 @@ const toString = {}.toString;
 export type ReadonlyArrayInput<T> = ReadonlyArray<T> | T[];
 export type ReadonlyObjectInput<T> = Readonly<T> | T;
 
-export function recursiveFreeze<T = any>(value: ReadonlyArrayInput<T>): ReadonlyArray<T>;
-export function recursiveFreeze<T = any>(value: ReadonlyObjectInput<T>): Readonly<T>;
-export function recursiveFreeze<T = number>(value: number): number;
-export function recursiveFreeze<T = string>(value: string): string;
-export function recursiveFreeze<T = boolean>(value: boolean): boolean;
-export function recursiveFreeze<T = symbol>(value: symbol): symbol;
-export function recursiveFreeze(value: any) {
+export function recursiveFreeze(value: number): number;
+export function recursiveFreeze(value: string): string;
+export function recursiveFreeze(value: boolean): boolean;
+export function recursiveFreeze(value: symbol): symbol;
+export function recursiveFreeze(value: null): null;
+export function recursiveFreeze(value: undefined): undefined;
+export function recursiveFreeze<T>(value: ReadonlyArrayInput<T>): ReadonlyArray<T>;
+export function recursiveFreeze<T>(value: ReadonlyObjectInput<T>): Readonly<T>;
+export function recursiveFreeze(value: any): any {
     //Primitives
     switch (typeof value) {
         case "number":

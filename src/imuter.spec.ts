@@ -45,7 +45,7 @@ describe("imuter", function() {
         });
 
         it("should work on simple arrays", function() {
-            const a: any[] = [];
+            const a = [];
             imuter(a);
             expect(a).toBeFrozen();
         });
@@ -84,6 +84,30 @@ describe("imuter", function() {
             imuter(a);
             expect(a).toBeFrozen();
             expect(obj).toBeFrozen();
+        });
+
+        it("should work with [object].map method", function() {
+            const a: Point[] = [new Point()].map(imuter);
+
+            expect(a[0]).toBeFrozen();
+        });
+
+        it("should work with [primitive].map method", function() {
+            const a: number[] = [1].map(imuter);
+
+            expect(a[0]).toBeFrozen();
+        });
+
+        it("should work with [null].map method", function() {
+            const a: null[] = [null].map(imuter);
+
+            expect(a[0]).toBeFrozen();
+        });
+
+        it("should work with [primitive].map method", function() {
+            const a: undefined[] = [undefined].map(imuter);
+
+            expect(a[0]).toBeFrozen();
         });
 
         it("should work on arrays in objects", function() {
