@@ -126,8 +126,8 @@ export function object_delete<T>(obj: ReadonlyObjectInput<T>, prop: keyof T): Re
 //Shallow merge like Object.assign, always into a plain JSON object
 export function object_assign<T, U>(a: T, b: U): Readonly<T & U>;
 export function object_assign<T, U, V>(a: T, b: U, c: V): Readonly<T & U & V>;
-export function object_assign(a: any, b: any, ...sources: any[]): Readonly<any> {
-    return deepFreeze(Object.assign({}, a, b, ...sources));
+export function object_assign(...sources: any[]): Readonly<any> {
+    return deepFreeze(Object.assign({}, ...sources));
 }
 
 
