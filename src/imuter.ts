@@ -165,6 +165,10 @@ export function array_remove<T = any>(arr: ReadonlyArrayInput<T>, index: number,
     return shallowFreeze(newArr);
 }
 
+export function array_exclude<T = any>(arr: ReadonlyArrayInput<T>, value: T): ReadonlyArray<T> {
+    return array_filter(arr, (v) => v !== value);
+}
+
 export function array_push<T = any>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
     deepFreeze(values);
 

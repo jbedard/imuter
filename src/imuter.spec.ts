@@ -3,7 +3,7 @@ import { addMatchers } from "../test/jasmine-matchers";
 import {
     imuter,
     object_assign, object_delete, object_set,
-    array_delete, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
+    array_delete, array_exclude, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
     write, writeValue, removeValue
 } from "./imuter";
 
@@ -470,6 +470,21 @@ describe("imuter", function() {
 
         it("should support array of frozen objects", function() {
             array_delete([imuter({})], 0);
+        });
+    });
+
+    describe("array_exclude", function() {
+        it("should return a new frozen array", function() {
+            const i = [0];
+            const a = array_exclude(i, 0);
+            expect(a).toBeFrozen();
+            expect(a).not.toBe(i);
+        });
+
+        it("should be a noop when empty", function() {
+            const i: any[] = [];
+            const a = array_exclude(i, 0);
+            expect(a).toBe(i);
         });
     });
 
