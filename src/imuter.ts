@@ -102,7 +102,7 @@ const REMOVE_VALUE: any = Object.freeze({});
 
 // Objects
 
-export function object_set<T>(obj: ReadonlyObjectInput<T> | T, prop: keyof T, value: any): Readonly<T> {
+export function object_set<K extends keyof T = any, T = any>(obj: ReadonlyObjectInput<T> | T, prop: K, value: T[K]): Readonly<T> {
     if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(prop in <any>obj) : obj[prop] === value) {
         return obj;
     }
@@ -113,7 +113,7 @@ export function object_set<T>(obj: ReadonlyObjectInput<T> | T, prop: keyof T, va
         delete newObj[prop];
     }
     else {
-        newObj[prop] = deepFreeze(value);
+        newObj[prop] = <any>deepFreeze(value);
     }
 
     return shallowFreeze(newObj);
@@ -239,7 +239,7 @@ export function array_filter<T = any>(arr: ReadonlyArrayInput<T>, callbackfn: (v
 //Write a deep value via a factory function
 export function write<T = any, V = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number, factory: (newValue: any, data: ReadonlyArrayInput<T>) => V): ReadonlyArray<T>;
 export function write<T = any, V = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T, factory: (newValue: any, data: ReadonlyArrayInput<T>) => V): Readonly<T>;
-export function write(data: any, path: Array<string | number> | string | number, factory: any) {
+export function write(data: any, path: Array<string | number> | string | number, factory: (newValue: any, data: any) => any) {
     if (!Array.isArray(path)) {
         path = [path];
     }
@@ -267,7 +267,7 @@ export function write(data: any, path: Array<string | number> | string | number,
             objs[i] = array_set(obj, <number>key, val);
         }
         else {
-            objs[i] = object_set<any>(obj, <string>key, val);
+            objs[i] = object_set(obj, <string>key, val);
         }
     }
 
@@ -277,13 +277,13 @@ export function write(data: any, path: Array<string | number> | string | number,
 //Write a deep value
 export function writeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number, value: any): ReadonlyArray<T>;
 export function writeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T, value: any): Readonly<T>;
-export function writeValue(data: any, path: Array<string | number>, value: any): any {
-    return write(data, path, (typeof value === "function") ? valueFn(value) : value);
+export function writeValue(data: any, path: Array<string | number> | number | string, value: any): any {
+    return write(data, <any>path, (typeof value === "function") ? valueFn(value) : value);
 }
 
 //Delete a deep value
 export function removeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number): ReadonlyArray<T>;
 export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T): Readonly<T>;
-export function removeValue(data: any, path: Array<string | number>) {
-    return write(data, path, REMOVE_VALUE);
+export function removeValue(data: any, path: Array<string | number> | number | string) {
+    return write(data, <any>path, REMOVE_VALUE);
 }

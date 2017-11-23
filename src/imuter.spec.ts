@@ -87,25 +87,25 @@ describe("imuter", function() {
         });
 
         it("should work with [object].map method", function() {
-            const a: Point[] = [new Point()].map(imuter);
+            const a: Point[] = [new Point()].map<Point>(imuter);
 
             expect(a[0]).toBeFrozen();
         });
 
         it("should work with [primitive].map method", function() {
-            const a: number[] = [1].map(imuter);
+            const a: number[] = [1].map<number>(imuter);
 
             expect(a[0]).toBeFrozen();
         });
 
         it("should work with [null].map method", function() {
-            const a: null[] = [null].map(imuter);
+            const a: null[] = [null].map<null>(imuter);
 
             expect(a[0]).toBeFrozen();
         });
 
         it("should work with [primitive].map method", function() {
-            const a: undefined[] = [undefined].map(imuter);
+            const a: undefined[] = [undefined].map<undefined>(imuter);
 
             expect(a[0]).toBeFrozen();
         });
@@ -290,7 +290,7 @@ describe("imuter", function() {
         });
 
         it("should add new properties", function() {
-            const o1 = imuter({a: 1});
+            const o1 = imuter<any>({a: 1});
             const o2 = object_set<any>(o1, "b", 2);
 
             expect(o1).not.toBe(o2);
@@ -300,7 +300,7 @@ describe("imuter", function() {
         });
 
         it("should deep-freeze the value being written", function() {
-            const o1 = imuter({a: 1});
+            const o1 = imuter<any>({a: 1});
             const nv = {b: [2]};
             const o2 = object_set<any>(o1, "a", nv);
 
