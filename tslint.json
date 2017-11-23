@@ -6,6 +6,7 @@
         //TypeScript Specific
         "adjacent-overload-signatures": true,
         "array-type": [true, "array-simple"],
+        "ban-comma-operator": true,
         "no-inferrable-types": [true, "ignore-params"],
         "no-internal-module": true,
         "no-var-requires": true,
@@ -35,13 +36,13 @@
         "no-shadowed-variable": true,
         "no-string-throw": true,
         // "no-reference": true,
+        "no-duplicate-switch-case": true,
         "no-require-imports": true,
         "no-unsafe-finally": true,
         "no-unused-expression": true,
         "no-use-before-declare": true,
         "triple-equals": [true, "allow-null-check"],
         "typedef": [true, "property-declaration"],
-        "typeof-compare": true,
         "radix": true,
 
         //Maintainability

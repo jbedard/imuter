@@ -30,7 +30,7 @@
     "karma-coverage": "1.1",
     "karma-jasmine": "1.1",
     "karma-typescript": "3.0",
-    "tslint": "5.7",
+    "tslint": "5.8",
     "typescript": "2.6"
   },
   "dependencies": {},
@@ -38,7 +38,7 @@
     "build": "tsc",
     "test": "karma start karma.conf.js --single-run",
     "test-server": "karma start karma.conf.js",
-    "lint": "tslint -c ./tslint.json --type-check --project ./tsconfig.json",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "changelog": "conventional-changelog --infile ./CHANGELOG.md --same-file --release-count 1 --preset angular"
   }
 }
