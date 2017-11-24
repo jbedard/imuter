@@ -290,8 +290,8 @@ describe("imuter", function() {
         });
 
         it("should add new properties", function() {
-            const o1 = imuter<any>({a: 1});
-            const o2 = object_set<any>(o1, "b", 2);
+            const o1 = imuter<{a: number, b?: number}>({a: 1});
+            const o2 = object_set(o1, "b", 2);
 
             expect(o1).not.toBe(o2);
             expect(o2.a).toBe(1);
@@ -300,15 +300,15 @@ describe("imuter", function() {
         });
 
         it("should deep-freeze the value being written", function() {
-            const o1 = imuter<any>({a: 1});
-            const nv = {b: [2]};
-            const o2 = object_set<any>(o1, "a", nv);
+            const o1 = imuter<{a: number, b?: {v: number[]}}>({a: 1});
+            const nv = {v: [2]};
+            const o2 = object_set(o1, "b", nv);
 
             expect(o1).not.toBe(o2);
-            expect(o2.a).toBe(nv);
+            expect(o2.b).toBe(nv);
             expect(o2).toBeFrozen();
             expect(o2.a).toBeFrozen();
-            expect(o2.a.b).toBeFrozen();
+            expect(o2.b.v).toBeFrozen();
         });
 
         it("should support classes", function() {
@@ -387,6 +387,27 @@ describe("imuter", function() {
             expect(p instanceof Point).toBe(false);
             expect(p.x).toBe(3);
             expect(p.y).toBe(3);
+        });
+
+        it("should merge types (2)", function() {
+            const p = object_assign({a: 1}, {b: "2"});
+            expect(p.a).toBe(1);
+            expect(p.b).toBe("2");
+        });
+
+        it("should merge types (3)", function() {
+            const p = object_assign({a: 1}, {b: "2"}, {c: true});
+            expect(p.a).toBe(1);
+            expect(p.b).toBe("2");
+            expect(p.c).toBe(true);
+        });
+
+        it("should merge types (4)", function() {
+            const p = object_assign({a: 1}, {b: "2"}, {c: true}, {d: {}});
+            expect(p.a).toBe(1);
+            expect(p.b).toBe("2");
+            expect(p.c).toBe(true);
+            expect(p.d).toEqual({});
         });
     });
 
@@ -901,9 +922,10 @@ describe("imuter", function() {
 
         it("should support writing functions as values", function() {
             const func = () => 2;
-            const o = {f: <any>1};
+            const o = {f: () => 1};
             const o2 = writeValue(o, ["f"], func);
             expect(o2.f).toBe(func);
+            expect(o2.f()).toBe(2);
         });
     });
 
@@ -931,6 +953,60 @@ describe("imuter", function() {
             expect(o2).not.toBe(o);
             expect(o2).toBeFrozen();
             expect(f).toHaveBeenCalledWith(1, o);
+        });
+
+        it("should support array types (index)", function() {
+            const o = {p: 1};
+            const o2 /*no type*/ = write([o], 0, () => ({p: 2}));
+            expect(o2[0].p).toBe(2);
+        });
+
+        it("should support array types ([index])", function() {
+            const o = {p: 1};
+            const o2 /*no type*/ = write([o], [0], () => ({p: 2}));
+            expect(o2[0].p).toBe(2);
+        });
+
+        it("should support array types ([index, property])", function() {
+            const o = {p: 1};
+            const o2 /*no type*/ = write([o], [0, "p"], () => 2);
+            expect(o2[0].p).toBe(2);
+        });
+
+        it("should support array types ([index, property, property])", function() {
+            const o = {p: {p2: 1}};
+            const o2 /*no type*/ = write([o], [0, "p", "p2"], () => 2);
+            expect(o2[0].p.p2).toBe(2);
+        });
+
+        it("should support array types ([index, property, property, property])", function() {
+            const o = {p: {p2: {p3: 1}}};
+            const o2 /*no type*/ = write([o], [0, "p", "p2"], () => ({p3: 2}));
+            expect(o2[0].p.p2.p3).toBe(2);
+        });
+
+        it("should support object types (property)", function() {
+            const o = {p: 1};
+            const o2 /*no type*/ = write(o, "p", () => 2);
+            expect(o2.p).toBe(2);
+        });
+
+        it("should support array types ([property])", function() {
+            const o = {p: 1};
+            const o2 /*no type*/ = write(o, ["p"], () => 2);
+            expect(o2.p).toBe(2);
+        });
+
+        it("should support array types ([property, property])", function() {
+            const o = {p: {p2: 1}};
+            const o2 /*no type*/ = write(o, ["p", "p2"], () => 2);
+            expect(o2.p.p2).toBe(2);
+        });
+
+        it("should support array types ([property, property, property])", function() {
+            const o = {p: {p2: {p3: 1}}};
+            const o2 /*no type*/ = write(o, ["p", "p2", "p3"], () => 2);
+            expect(o2.p.p2.p3).toBe(2);
         });
     });
 

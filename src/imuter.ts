@@ -17,7 +17,8 @@ export function recursiveFreeze(value: boolean): boolean;
 export function recursiveFreeze(value: symbol): symbol;
 export function recursiveFreeze(value: null): null;
 export function recursiveFreeze(value: undefined): undefined;
-export function recursiveFreeze<T>(value: ReadonlyArrayInput<T>): ReadonlyArray<T>;
+export function recursiveFreeze<T = number | string | boolean | symbol | null | undefined>(value: ReadonlyArray<T> | T[]): ReadonlyArray<T>;
+export function recursiveFreeze<T>(value: ReadonlyArrayInput<T>): ReadonlyArray<Readonly<T>>;
 export function recursiveFreeze<T>(value: ReadonlyObjectInput<T>): Readonly<T>;
 export function recursiveFreeze(value: any): any {
     //Primitives
@@ -102,7 +103,7 @@ const REMOVE_VALUE: any = Object.freeze({});
 
 // Objects
 
-export function object_set<K extends keyof T = any, T = any>(obj: ReadonlyObjectInput<T> | T, prop: K, value: T[K]): Readonly<T> {
+export function object_set<K extends keyof T, T = any>(obj: ReadonlyObjectInput<T> | T, prop: K, value: T[K]): Readonly<T> {
     if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(prop in <any>obj) : obj[prop] === value) {
         return obj;
     }
@@ -126,6 +127,7 @@ export function object_delete<T>(obj: ReadonlyObjectInput<T>, prop: keyof T): Re
 //Shallow merge like Object.assign, always into a plain JSON object
 export function object_assign<T, U>(a: T, b: U): Readonly<T & U>;
 export function object_assign<T, U, V>(a: T, b: U, c: V): Readonly<T & U & V>;
+export function object_assign<T, U, V, W>(a: T, b: U, c: V, d: W): Readonly<T & U & V & W>;
 export function object_assign(...sources: any[]): Readonly<any> {
     return deepFreeze(Object.assign({}, ...sources));
 }
@@ -237,9 +239,14 @@ export function array_filter<T = any>(arr: ReadonlyArrayInput<T>, callbackfn: (v
 
 
 //Write a deep value via a factory function
-export function write<T = any, V = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number, factory: (newValue: any, data: ReadonlyArrayInput<T>) => V): ReadonlyArray<T>;
-export function write<T = any, V = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T, factory: (newValue: any, data: ReadonlyArrayInput<T>) => V): Readonly<T>;
-export function write(data: any, path: Array<string | number> | string | number, factory: (newValue: any, data: any) => any) {
+export function write<T = any>(data: ReadonlyArrayInput<T>, path: number | [number], factory: (oldValue: T, data: ReadonlyArray<T>) => T): ReadonlyArray<T>;
+export function write<K1 extends keyof T, T = any>(data: ReadonlyArrayInput<T>, path: [number, K1], factory: (oldValue: T[K1], data: ReadonlyArray<T>) => T[K1]): ReadonlyArray<T>;
+export function write<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2], factory: (oldValue: T[K1][K2], data: ReadonlyArray<T>) => T[K1][K2]): ReadonlyArray<T>;
+export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2, K3], factory: (oldValue: T[K1][K2][K3], data: ReadonlyArray<T>) => T[K1][K2][K3]): ReadonlyArray<T>;
+export function write<K1 extends keyof T, T = any>(data: ReadonlyObjectInput<T>, path: K1 | [K1], factory: (oldValue: T[K1], data: Readonly<T>) => T[K1]): Readonly<T>;
+export function write<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2], factory: (oldValue: T[K1][K2], data: Readonly<T>) => T[K1][K2]): Readonly<T>;
+export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], factory: (oldValue: T[K1][K2][K3], data: Readonly<T>) => T[K1][K2][K3]): Readonly<T>;
+export function write<T = any>(data: T, path: Array<string | number> | number | keyof T, factory: Function) {
     if (!Array.isArray(path)) {
         path = [path];
     }
@@ -275,15 +282,28 @@ export function write(data: any, path: Array<string | number> | string | number,
 }
 
 //Write a deep value
-export function writeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number, value: any): ReadonlyArray<T>;
-export function writeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T, value: any): Readonly<T>;
-export function writeValue(data: any, path: Array<string | number> | number | string, value: any): any {
-    return write(data, <any>path, (typeof value === "function") ? valueFn(value) : value);
+export function writeValue<T = any>(data: ReadonlyArrayInput<T>, path: number | [number], value: T): ReadonlyArray<T>;
+export function writeValue<K1 extends keyof T, T = any>(data: ReadonlyArrayInput<T>, path: [number, K1], value: T[K1]): ReadonlyArray<T>;
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2], value: T[K1][K2]): ReadonlyArray<T>;
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2, K3], value: T[K1][K2][K3]): ReadonlyArray<T>;
+export function writeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number>, value: any): ReadonlyArray<T>;
+export function writeValue<K1 extends keyof T, T = any>(data: ReadonlyObjectInput<T>, path: K1 | [K1], value: T[K1]): Readonly<T>;
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2], value: T[K1][K2]): Readonly<T>;
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], value: T[K1][K2][K3]): Readonly<T>;
+export function writeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>, value: any): Readonly<T>;
+export function writeValue<T = any>(data: T, path: Array<string | number> | number | keyof T, value: any): any {
+    return write<any>(data, path, (typeof value === "function") ? valueFn(value) : value);
 }
 
 //Delete a deep value
-export function removeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number): ReadonlyArray<T>;
-export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number> | keyof T): Readonly<T>;
-export function removeValue(data: any, path: Array<string | number> | number | string) {
-    return write(data, <any>path, REMOVE_VALUE);
+export function removeValue<K1 extends keyof T, T = any>(data: ReadonlyArrayInput<T>, path: [number, K1]): ReadonlyArray<T>;
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2]): ReadonlyArray<T>;
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2, K3]): ReadonlyArray<T>;
+export function removeValue<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number> | number | string): ReadonlyArray<T>;
+export function removeValue<K1 extends keyof T, T = any>(data: ReadonlyObjectInput<T>, path: K1 | [K1]): Readonly<T>;
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2]): Readonly<T>;
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3]): Readonly<T>;
+export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>): Readonly<T>;
+export function removeValue<T = any>(data: T, path: Array<string | number> | number | keyof T) {
+    return write<any>(data, path, REMOVE_VALUE);
 }
