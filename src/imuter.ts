@@ -171,6 +171,12 @@ export function array_exclude<T = any>(arr: ReadonlyArrayInput<T>, value: T): Re
     return array_filter(arr, (v) => v !== value);
 }
 
+export function array_replace<T = any>(arr: ReadonlyArrayInput<T>, oldValue: T, newValue: T): ReadonlyArray<T> {
+    deepFreeze(newValue);
+
+    return array_map(arr, (v) => v === oldValue ? newValue : v);
+}
+
 export function array_push<T = any>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
     deepFreeze(values);
 

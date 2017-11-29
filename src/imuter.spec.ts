@@ -3,7 +3,7 @@ import { addMatchers } from "../test/jasmine-matchers";
 import {
     imuter,
     object_assign, object_delete, object_set,
-    array_delete, array_exclude, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
+    array_delete, array_exclude, array_replace, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
     write, writeValue, removeValue
 } from "./imuter";
 
@@ -514,6 +514,39 @@ describe("imuter", function() {
             const i: any[] = [];
             const a = array_exclude(i, 0);
             expect(a).toBe(i);
+        });
+    });
+
+    describe("array_replace", function() {
+        it("should return a new frozen array", function() {
+            const i = [0];
+            const a = array_replace(i, 0, 1);
+            expect(a).toBeFrozen();
+            expect(a).not.toBe(i);
+        });
+
+        it("should replace multiple of the specified value", function() {
+            const i = [0, 1, 0, 2, 0];
+            const a = array_replace(i, 0, 1);
+            expect(a).toBeFrozen();
+            expect(a).not.toBe(i);
+            expect(a).toEqual([1, 1, 1, 2, 1]);
+        });
+
+        it("should be a noop when empty", function() {
+            const i: any[] = [];
+            const a = array_replace(i, 0, 1);
+            expect(a).toBe(i);
+        });
+
+        it("should freeze the new value", function() {
+            const i = [{}];
+            const nv = {};
+            const a = array_replace(i, i[0], nv);
+            expect(a).toBeFrozen();
+            expect(a).not.toBe(i);
+            expect(a[0]).toBeFrozen();
+            expect(a[0]).toBe(nv);
         });
     });
 
