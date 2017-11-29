@@ -252,10 +252,8 @@ export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends key
 export function write<K1 extends keyof T, T = any>(data: ReadonlyObjectInput<T>, path: K1 | [K1], factory: (oldValue: T[K1], data: Readonly<T>) => T[K1]): Readonly<T>;
 export function write<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2], factory: (oldValue: T[K1][K2], data: Readonly<T>) => T[K1][K2]): Readonly<T>;
 export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], factory: (oldValue: T[K1][K2][K3], data: Readonly<T>) => T[K1][K2][K3]): Readonly<T>;
-export function write<T = any>(data: T, path: Array<string | number> | number | keyof T, factory: Function) {
-    if (!Array.isArray(path)) {
-        path = [path];
-    }
+export function write<T = any>(data: T, pathOrKey: Array<string | number> | number | keyof T, factory: Function) {
+    const path = Array.isArray(pathOrKey) ? pathOrKey : [pathOrKey];
 
     //Follow the path into the object, except for the last value being replaced
     const objs: any[] = [data];
@@ -263,12 +261,8 @@ export function write<T = any>(data: T, path: Array<string | number> | number | 
         objs.push( objs[i][path[i]] );
     }
 
-    if (typeof factory === "function") {
-        factory = factory(objs[objs.length - 1], data);
-    }
-
     //Replace the last object with the new value
-    objs[objs.length - 1] = factory;
+    objs[objs.length - 1] = factory(objs[objs.length - 1], data);
 
     //Write the new immutable data back into the objects
     for (let i = objs.length - 2; i >= 0; i--) {
@@ -298,7 +292,7 @@ export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>(
 export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], value: T[K1][K2][K3]): Readonly<T>;
 export function writeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>, value: any): Readonly<T>;
 export function writeValue<T = any>(data: T, path: Array<string | number> | number | keyof T, value: any): any {
-    return write<any>(data, path, (typeof value === "function") ? valueFn(value) : value);
+    return write<any>(data, path, valueFn(value));
 }
 
 //Delete a deep value
@@ -311,5 +305,5 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>
 export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3]): Readonly<T>;
 export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>): Readonly<T>;
 export function removeValue<T = any>(data: T, path: Array<string | number> | number | keyof T) {
-    return write<any>(data, path, REMOVE_VALUE);
+    return write<any>(data, path, valueFn(REMOVE_VALUE));
 }
