@@ -946,13 +946,44 @@ describe("imuter", function() {
             expect(o2.p.p).toBe(2);
         });
 
-        it("should provide [old value, root object] as the factory args", function() {
+        it("should provide [old value, root object] as the factory args (direct child)", function() {
             const o = {p: 1};
             const f = jasmine.createSpy("factory").and.returnValue(2);
             const o2 = write(o, ["p"], f);
             expect(o2).not.toBe(o);
             expect(o2).toBeFrozen();
             expect(f).toHaveBeenCalledWith(1, o);
+        });
+
+        it("should provide [old value, root object] as the factory args (nested child)", function() {
+            const o = {p: {p2: {p3: 1}}};
+            const f = jasmine.createSpy("factory").and.returnValue(2);
+            const o2 = write(o, ["p", "p2", "p3"], f);
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(f).toHaveBeenCalledWith(1, o);
+        });
+
+        interface IFoo { foo: number; }
+        it("should support interface types", function() {
+            const o: IFoo = {foo: 1};
+            const f = jasmine.createSpy("factory").and.returnValue(2);
+            const o2 = write(o, "foo", f);
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2.foo).toBe(2);
+            expect(f).toHaveBeenCalledWith(1, o);
+        });
+
+        interface INestedFoo { foo: number; nested?: INestedFoo; }
+        it("should support interface types (nested)", function() {
+            const o: INestedFoo = {foo: 1, nested: {foo: 2, nested: {foo: 3}}};
+            const f = jasmine.createSpy("factory").and.returnValue(2);
+            const o2 = write(o, ["nested", "nested", "foo"], f);
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2.nested.nested.foo).toBe(2);
+            expect(f).toHaveBeenCalledWith(3, o);
         });
 
         it("should support array types (index)", function() {
