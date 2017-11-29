@@ -502,6 +502,14 @@ describe("imuter", function() {
             expect(a).not.toBe(i);
         });
 
+        it("should replace multiple of the specified value", function() {
+            const i = [0, 1, 0, 2, 0];
+            const a = array_exclude(i, 0);
+            expect(a).toBeFrozen();
+            expect(a).not.toBe(i);
+            expect(a).toEqual([1, 2]);
+        });
+
         it("should be a noop when empty", function() {
             const i: any[] = [];
             const a = array_exclude(i, 0);
