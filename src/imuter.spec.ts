@@ -1027,6 +1027,22 @@ describe("imuter", function() {
             expect(f).toHaveBeenCalledWith(3, o);
         });
 
+        type ITypeInterface = Readonly<{
+            x?: string;
+            y: number
+            z?: Readonly<{[id: string]: boolean}>;
+        }>;
+        it("should support types (nested)", function() {
+            const o: ITypeInterface = {y: 3, z: {p: true}};
+            const f = jasmine.createSpy("factory").and.returnValue(false);
+            const prop: string = ("p" as any);
+            const o2 = write(o, ["z", prop], f);
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2.z.p).toBe(false);
+            expect(f).toHaveBeenCalledWith(true, o);
+        });
+
         it("should support array types (index)", function() {
             const o = {p: 1};
             const o2 /*no type*/ = write([o], 0, () => ({p: 2}));
