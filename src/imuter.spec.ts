@@ -4,7 +4,7 @@ import {
     imuter,
     object_assign, object_delete, object_set,
     array_delete, array_exclude, array_replace, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
-    write, writeValue, removeValue
+    write, writeValue, writeValues, removeValue
 } from "./imuter";
 
 
@@ -967,6 +967,56 @@ describe("imuter", function() {
             const o2 = writeValue(o, ["f"], func);
             expect(o2.f).toBe(func);
             expect(o2.f()).toBe(2);
+        });
+    });
+
+    describe("writeValues", function() {
+        it("should merge values into existing (single path key)", function() {
+            const o = {p: {p1: 1, p2: 2, p3: 3}};
+            const o2 = writeValues(o, "p", {p2: 4, p3: 5});
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2.p.p1).toBe(1);
+            expect(o2.p.p2).toBe(4);
+            expect(o2.p.p3).toBe(5);
+        });
+
+        it("should merge values into existing (multi path key)", function() {
+            const o = {p: {sp: {p1: 1, p2: 2, p3: 3}}};
+            const o2 = writeValues(o, ["p", "sp"], {p2: 4, p3: 5});
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2.p.sp.p1).toBe(1);
+            expect(o2.p.sp.p2).toBe(4);
+            expect(o2.p.sp.p3).toBe(5);
+        });
+
+        it("should work with arrays (single path key)", function() {
+            const o = [{p1: 1, p2: 2, p3: 3}];
+            const o2 = writeValues(o, 0, {p2: 4, p3: 5});
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2[0].p1).toBe(1);
+            expect(o2[0].p2).toBe(4);
+            expect(o2[0].p3).toBe(5);
+        });
+
+        it("should work with arrays (multi path key)", function() {
+            const o = [{sp: {p1: 1, p2: 2, p3: 3}}];
+            const o2 = writeValues(o, [0, "sp"], {p2: 4, p3: 5});
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2[0].sp.p1).toBe(1);
+            expect(o2[0].sp.p2).toBe(4);
+            expect(o2[0].sp.p3).toBe(5);
+        });
+
+        it("should work with nested inner arrays", function() {
+            const o = {a: [{a2: [true, {b: {x: 1, y: 2, z: 3}}]}]};
+            const o2 = writeValues(o, ["a", 0, "a2", 1, "b"], {x: 4, z: 5});
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2).toEqual({a: [{a2: [true, {b: {x: 4, y: 2, z: 5}}]}]});
         });
     });
 

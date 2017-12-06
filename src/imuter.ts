@@ -281,6 +281,16 @@ export function write<T = any>(data: T, pathOrKey: Array<string | number> | numb
     return objs[0];
 }
 
+
+function read(data: any, path: Array<string | number>) {
+    let obj = data;
+    for (const p of path) {
+        obj = obj[p];
+    }
+    return obj;
+}
+
+
 //Write a deep value
 export function writeValue<T = any>(data: ReadonlyArrayInput<T>, path: number | [number], value: T): ReadonlyArray<T>;
 export function writeValue<K1 extends keyof T, T = any>(data: ReadonlyArrayInput<T>, path: [number, K1], value: T[K1]): ReadonlyArray<T>;
@@ -294,6 +304,27 @@ export function writeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<st
 export function writeValue<T = any>(data: T, path: Array<string | number> | number | keyof T, value: any): any {
     return write<any>(data, path, valueFn(value));
 }
+
+
+export function writeValues<T = any>(data: ReadonlyArrayInput<T>, path: number | [number], values: Partial<T>): ReadonlyArray<T>;
+export function writeValues<K1 extends keyof T, T = any>(data: ReadonlyArrayInput<T>, path: [number, K1], values: Partial<T[K1]>): ReadonlyArray<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2], values: Partial<T[K1][K2]>): ReadonlyArray<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyArrayInput<T>, path: [number, K1, K2, K3], values: Partial<T[K1][K2][K3]>): ReadonlyArray<T>;
+export function writeValues<T = any>(data: ReadonlyArrayInput<T>, path: Array<string | number>, values: {[k: string]: any}): ReadonlyArray<T>;
+export function writeValues<K1 extends keyof T, T = any>(data: ReadonlyObjectInput<T>, path: K1 | [K1], values: Partial<T[K1]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2], values: Partial<T[K1][K2]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], values: Partial<T[K1][K2][K3]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, T = any>(data: ReadonlyObjectInput<T>, path: K1 | [K1], values: Partial<T[K1]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2], values: Partial<T[K1][K2]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], values: Partial<T[K1][K2][K3]>): Readonly<T>;
+export function writeValues<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>, values: {[k: string]: any}): Readonly<T>;
+export function writeValues<T = any>(data: any, pathOrKey: Array<string | number> | number | keyof T, values: {[k: string]: any}): any {
+    const path = Array.isArray(pathOrKey) ? pathOrKey : [pathOrKey];
+    const oldValue = read(data, path);
+    const newValue = object_assign(oldValue, values);
+    return writeValue<T>(data, path, newValue);
+}
+
 
 //Delete a deep value
 export function removeValue<K1 extends keyof T, T = any>(data: ReadonlyArrayInput<T>, path: [number, K1]): ReadonlyArray<T>;
