@@ -100,6 +100,7 @@ export const imuter = deepFreeze;
 
 const DELETE_VALUE: any = Object.freeze({});
 const REMOVE_VALUE: any = Object.freeze({});
+const REMOVE_VALUE_FN = valueFn(REMOVE_VALUE);
 
 // Objects
 
@@ -258,6 +259,11 @@ export function write<T = any>(data: T, pathOrKey: Array<string | number> | numb
     //Follow the path into the object, except for the last value being replaced
     const objs: any[] = [data];
     for (let i = 0; i < path.length; i++) {
+        // Support non-existing parent values for the removeValue case
+        if (factory === REMOVE_VALUE_FN && !objs[i].hasOwnProperty(path[i])) {
+            return data;
+        }
+
         objs.push( objs[i][path[i]] );
     }
 
@@ -336,5 +342,5 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T = any>
 export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T = any>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3]): Readonly<T>;
 export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>): Readonly<T>;
 export function removeValue<T = any>(data: T, path: Array<string | number> | number | keyof T) {
-    return write<any>(data, path, valueFn(REMOVE_VALUE));
+    return write<any>(data, path, REMOVE_VALUE_FN);
 }

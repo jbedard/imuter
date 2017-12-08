@@ -1283,10 +1283,6 @@ describe("imuter", function() {
             expect(o4).toBe(o);
         });
 
-        it("should fail if the specified path does not exist", function() {
-            expect(function() { removeValue({}, ["does", "not", "exist"]); }).toThrow();
-        });
-
         it("should support mixed arrays/objects (root object)", function() {
             const o = {
                 f: [{}, {
@@ -1330,6 +1326,34 @@ describe("imuter", function() {
 
             expect(o2.a.length).toBe(2);
             expect(o2.a[1]).toBe(2);
+        });
+
+        it("should remove present-but-undefined values", function() {
+            const o = {a: undefined};
+            const o2 = removeValue(o, "a");
+            expect(o2).not.toBe(o);
+            expect(o2.hasOwnProperty("a")).toBe(false);
+            expect(o2).toEqual(<any>{});
+        });
+
+        it("should remove present-but-undefined deep values", function() {
+            const o = {a: {b: {c: undefined}}};
+            const o2 = removeValue(o, ["a", "b", "c"]);
+            expect(o2).not.toBe(o);
+            expect(o2.a.b.hasOwnProperty("c")).toBe(false);
+            expect(o2).toEqual(<any>{a: {b: {}}});
+        });
+
+        it("should noop for already non-existing properties", function() {
+            const o = {a: 2};
+            const o2 = removeValue(o, <any>"b");
+            expect(o2).toBe(o);
+        });
+
+        it("should noop for already non-existing deep properties", function() {
+            const o = {a: 2};
+            const o2 = removeValue(o, <any>["b", "c"]);
+            expect(o2).toBe(o);
         });
     });
 });
