@@ -4,7 +4,7 @@ import {
     imuter,
     object_assign, object_delete, object_set,
     array_delete, array_exclude, array_replace, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
-    write, writeValue, writeValues, removeValue
+    write, writeValue, writeValues, removeValue, removeValues
 } from "./imuter";
 
 
@@ -1354,6 +1354,60 @@ describe("imuter", function() {
             const o = {a: 2};
             const o2 = removeValue(o, <any>["b", "c"]);
             expect(o2).toBe(o);
+        });
+    });
+
+    describe("removeValues", function() {
+        it("should return a new frozen object", function() {
+            const o = {p: 1};
+            const o2 = removeValues(o, "p");
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+        });
+
+        it("should remove values all specified key", function() {
+            const o = {a: 1, b: {}, c: undefined, d: true};
+            const o2 = removeValues(o, "a", "b", "c", "d");
+            expect(o2).not.toBe(o);
+            expect(o2).toEqual(<any>{});
+            expect(o2).toBeFrozen();
+        });
+
+        it("should noop for already non-existing properties", function() {
+            const o = {a: 2};
+            const o2 = removeValues(o, <any>"b");
+            expect(o2).toBe(o);
+        });
+
+        it("should noop for inherited but existing properties", function() {
+            const o = Object.create({a: 2});
+            const o2 = removeValues(o, "a");
+            expect(o2).toBe(o);
+        });
+
+        it("should remove present-but-undefined values", function() {
+            const o = {a: undefined, b: undefined, c: undefined};
+            const o2 = removeValues(o, "a", "b");
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2.hasOwnProperty("a")).toBe(false);
+            expect(o2.hasOwnProperty("b")).toBe(false);
+            expect(o2.hasOwnProperty("c")).toBe(true);
+            expect(o2).toEqual(<any>{c: undefined});
+        });
+
+        it("should create a new instance of the same prototype", function() {
+            class Optionals {
+                constructor(public a: number, public b?: number) {}
+            }
+
+            const o = new Optionals(1, 2);
+            const o2 = removeValues(o, "a", "b");
+            expect(o2).not.toBe(o);
+            expect(o2).toBeFrozen();
+            expect(o2).toEqual(jasmine.any(Optionals));
+            expect(o2.hasOwnProperty("a")).toBe(false);
+            expect(o2.hasOwnProperty("b")).toBe(false);
         });
     });
 });

@@ -102,6 +102,10 @@ const DELETE_VALUE: any = Object.freeze({});
 const REMOVE_VALUE: any = Object.freeze({});
 const REMOVE_VALUE_FN = valueFn(REMOVE_VALUE);
 
+function shallowCloneObject<T>(obj: T): T {
+    return Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
+}
+
 // Objects
 
 export function object_set<K extends keyof T, T = any>(obj: ReadonlyObjectInput<T> | T, prop: K, value: T[K]): Readonly<T> {
@@ -109,7 +113,7 @@ export function object_set<K extends keyof T, T = any>(obj: ReadonlyObjectInput<
         return obj;
     }
 
-    const newObj: T = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
+    const newObj: T = shallowCloneObject(obj);
 
     if (value === DELETE_VALUE || value === REMOVE_VALUE) {
         delete newObj[prop];
@@ -343,4 +347,20 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 exten
 export function removeValue<T = any>(data: ReadonlyObjectInput<T>, path: Array<string | number>): Readonly<T>;
 export function removeValue<T = any>(data: T, path: Array<string | number> | number | keyof T) {
     return write<any>(data, path, REMOVE_VALUE_FN);
+}
+
+//Delete multiple deep values
+export function removeValues<T = any>(data: ReadonlyObjectInput<T>, ...keys: Array<keyof T>): Readonly<T> {
+    let newValue: T | undefined;
+
+    for (const key of keys) {
+        if (data.hasOwnProperty(key)) {
+            if (undefined === newValue) {
+                newValue = shallowCloneObject(data);
+            }
+            delete newValue[key];
+        }
+    }
+
+    return newValue ? shallowFreeze(newValue) : data;
 }
