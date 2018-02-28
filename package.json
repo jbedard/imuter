@@ -12,6 +12,7 @@
   ],
   "main": "dist/imuter.js",
   "types": "dist/imuter.d.ts",
+  "side-effects": false,
   "author": "Jason Bedard",
   "license": "MIT",
   "repository": {
