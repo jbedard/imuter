@@ -1367,7 +1367,7 @@ describe("imuter", function() {
 
         it("should remove values all specified key", function() {
             const o = {a: 1, b: {}, c: undefined, d: true};
-            const o2 = removeValues(o, "a", "b", "c", "d");
+            const o2 = removeValues<{a: any, b: any, c: any, d: any}>(o, "a", "b", "c", "d");
             expect(o2).not.toBe(o);
             expect(o2).toEqual(<any>{});
             expect(o2).toBeFrozen();
@@ -1387,7 +1387,7 @@ describe("imuter", function() {
 
         it("should remove present-but-undefined values", function() {
             const o = {a: undefined, b: undefined, c: undefined};
-            const o2 = removeValues(o, "a", "b");
+            const o2 = removeValues<{a: any, b: any, c: any}>(o, "a", "b");
             expect(o2).not.toBe(o);
             expect(o2).toBeFrozen();
             expect(o2.hasOwnProperty("a")).toBe(false);
@@ -1402,7 +1402,7 @@ describe("imuter", function() {
             }
 
             const o = new Optionals(1, 2);
-            const o2 = removeValues(o, "a", "b");
+            const o2 = removeValues<Optionals>(o, "a", "b");
             expect(o2).not.toBe(o);
             expect(o2).toBeFrozen();
             expect(o2).toEqual(jasmine.any(Optionals));
