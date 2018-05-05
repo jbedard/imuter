@@ -31,89 +31,111 @@ describe("freezing", function() {
         imuter("able");
     });
 
-    it("should work on null/undefined", function() {
-        imuter(undefined);
-        imuter(null);
+    it("should work on undefined", function() {
+        const u: undefined = imuter(undefined);
+        expect(u).toBeUndefined();
+    });
+
+    it("should work on null", function() {
+        const n: null = imuter(null);
+        expect(n).toBeNull();
     });
 
     it("should work on plain objeccts", function() {
         const obj = {};
-        imuter(obj);
+        const iobj: Readonly<{}> = imuter(obj);
+        expect(iobj).toBe(obj);
         expect(obj).toBeFrozen();
     });
 
     it("should work on simple arrays", function() {
-        const a = [];
-        imuter(a);
+        const a: any[] = [];
+        const ia: ReadonlyArray<any> = imuter(a);
+        expect(ia).toBe(a);
         expect(a).toBeFrozen();
     });
 
     it("should return the same object", function() {
         const o = {};
-        expect(imuter(o)).toBe(o);
+        const io: Readonly<{}> = imuter(o);
+        expect(io).toBe(o);
     });
 
     it("should work on already frozen objects", function() {
         const o = {};
-        expect(imuter(imuter(o))).toBe(o);
+        const io1: Readonly<{}> = imuter(o);
+        const io2: Readonly<{}> = imuter(io1);
+        expect(io1).toBe(o);
+        expect(io2).toBe(o);
     });
 
     it("should work on wrapped already frozen objects", function() {
-        const o = imuter({});
-        const o2 = [o];
-        expect(imuter(o2)).toBe(o2);
+        const o: Readonly<{}> = imuter({});
+        const o2: Array<{}> = [o];
+        const io2: ReadonlyArray<Readonly<{}>> = imuter(o2);
+        expect(o).toBeFrozen();
+        expect(io2).toBeFrozen();
+        expect(io2).toBe(o2);
     });
 
     it("should work on simple arrays containing primitives", function() {
         const a = [1, "2", true, null, "5"];
-        imuter(a);
-        expect(a).toBeFrozen();
+        const ia: ReadonlyArray<string | number | boolean | null> = imuter(a);
+        expect(ia).toBe(a);
+        expect(ia).toBeFrozen();
     });
 
     it("should work on plain objeccts containing primitives", function() {
         const obj = {1: 1, 2: "2", true: true, null: null, 5: 5};
-        imuter(obj);
-        expect(obj).toBeFrozen();
+        const iobj: Readonly<{1: number, 2: string, true: boolean, null: null, 5: number}> = imuter(obj);
+        expect(iobj).toBe(obj);
+        expect(iobj).toBeFrozen();
     });
 
     it("should work on objects in arrays", function() {
         const obj = {};
         const a = [obj];
-        imuter(a);
-        expect(a).toBeFrozen();
+        const ia: ReadonlyArray<Readonly<{}>> = imuter(a);
+        expect(ia).toBe(a);
+        expect(ia).toBeFrozen();
         expect(obj).toBeFrozen();
     });
 
     it("should work with [object].map method", function() {
-        const a: Point[] = [new Point()].map<Point>(imuter);
+        const a = [new Point()].map<Point>(imuter);
+        const i0: Point = a[0];
 
-        expect(a[0]).toBeFrozen();
+        expect(i0).toBeFrozen();
     });
 
     it("should work with [primitive].map method", function() {
-        const a: number[] = [1].map<number>(imuter);
+        const a = [1].map<number>(imuter);
+        const a0: number = a[0];
 
-        expect(a[0]).toBeFrozen();
+        expect(a0).toBeFrozen();
     });
 
     it("should work with [null].map method", function() {
-        const a: null[] = [null].map<null>(imuter);
+        const a = [null].map<null>(imuter);
+        const a0: null = a[0];
 
-        expect(a[0]).toBeFrozen();
+        expect(a0).toBeFrozen();
     });
 
     it("should work with [primitive].map method", function() {
-        const a: undefined[] = [undefined].map<undefined>(imuter);
+        const a = [undefined].map<undefined>(imuter);
+        const a0: undefined = a[0];
 
-        expect(a[0]).toBeFrozen();
+        expect(a0).toBeFrozen();
     });
 
     it("should work on arrays in objects", function() {
         const a: any[] = [];
         const obj = {a};
-        imuter(obj);
+        const iobj = imuter(obj);
+        expect(iobj).toBe(obj);
+        expect(iobj).toBeFrozen();
         expect(a).toBeFrozen();
-        expect(obj).toBeFrozen();
     });
 
     it("should work on Date instances", function() {
@@ -124,41 +146,47 @@ describe("freezing", function() {
 
     it("should work on RegExp instances", function() {
         const v = new RegExp("foo");
-        expect(imuter(v)).toBe(v);
-        expect(v).toBeFrozen();
+        const iv: Readonly<RegExp> = imuter(v);
+        expect(iv).toBe(v);
+        expect(iv).toBeFrozen();
     });
 
     it("should work on RegExp values", function() {
         const v = /foo/;
-        expect(imuter(v)).toBe(v);
-        expect(v).toBeFrozen();
+        const iv: Readonly<RegExp> = imuter(v);
+        expect(iv).toBe(v);
+        expect(iv).toBeFrozen();
     });
 
     it("should work on Number instances", function() {
         /* tslint:disable: no-construct */
         const v = new Number(5);
-        expect(imuter(v)).toBe(v);
-        expect(v).toBeFrozen();
+        const iv: Readonly<Number> = imuter(v);
+        expect(iv).toBe(v);
+        expect(iv).toBeFrozen();
     });
 
     it("should work on Boolean instances", function() {
         /* tslint:disable: no-construct */
         const v = new Boolean(false);
-        expect(imuter(v)).toBe(v);
-        expect(v).toBeFrozen();
+        const iv: Readonly<Boolean> = imuter(v);
+        expect(iv).toBe(v);
+        expect(iv).toBeFrozen();
     });
 
     it("should work on String instances", function() {
         /* tslint:disable: no-construct */
         const v = new String("v");
-        expect(imuter(v)).toBe(v);
-        expect(v).toBeFrozen();
+        const iv: Readonly<String> = imuter(v);
+        expect(iv).toBe(v);
+        expect(iv).toBeFrozen();
     });
 
     it("should work on classes", function() {
         const p = new Point(1, 2);
-        expect(imuter(p)).toBe(p);
-        expect(p).toBeFrozen();
+        const ip: Readonly<Point> = imuter(p);
+        expect(ip).toBe(p);
+        expect(ip).toBeFrozen();
     });
 
     it("should work on self-referencing objects", function() {
@@ -306,7 +334,7 @@ describe("object_set", function() {
         expect(o2.b).toBe(nv);
         expect(o2).toBeFrozen();
         expect(o2.a).toBeFrozen();
-        expect(o2.b.v).toBeFrozen();
+        expect(o2.b!.v).toBeFrozen();
     });
 
     it("should support classes", function() {
@@ -1071,7 +1099,7 @@ describe("write", function() {
         const o2 = write(o, ["nested", "nested", "foo"], f);
         expect(o2).not.toBe(o);
         expect(o2).toBeFrozen();
-        expect(o2.nested.nested.foo).toBe(2);
+        expect(o2.nested!.nested!.foo).toBe(2);
         expect(f).toHaveBeenCalledWith(3, o);
     });
 
@@ -1087,7 +1115,7 @@ describe("write", function() {
         const o2 = write(o, ["z", prop], f);
         expect(o2).not.toBe(o);
         expect(o2).toBeFrozen();
-        expect(o2.z.p).toBe(false);
+        expect(o2.z!.p).toBe(false);
         expect(f).toHaveBeenCalledWith(true, o);
     });
 

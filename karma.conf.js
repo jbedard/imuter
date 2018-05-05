@@ -1,5 +1,7 @@
 "use strict";
 
+const fs = require("fs");
+
 module.exports = function(config) {
     config.set({
         basePath: "",
@@ -32,6 +34,10 @@ module.exports = function(config) {
                 //Enabled coverage when running in non-server mode
                 instrumentation: config.singleRun
             },
+            compilerOptions: Object.assign(
+                JSON.parse(fs.readFileSync("./tsconfig.json", {encoding: "utf8"})).compilerOptions,
+                {module: undefined}
+            )
         },
 
         port: 9876,
