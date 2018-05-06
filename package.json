@@ -37,7 +37,7 @@
   "dependencies": {},
   "scripts": {
     "build": "tsc",
-    "test": "karma start karma.conf.js --single-run",
+    "test": "karma start karma.conf.js --single-run --browsers ChromeHeadless",
     "test-server": "karma start karma.conf.js",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "changelog": "conventional-changelog --infile ./CHANGELOG.md --same-file --release-count 1 --preset angular"
