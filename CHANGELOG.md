@@ -1,3 +1,18 @@
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/jbedard/imuter/compare/v0.0.11...v0.1.0) (2018-05-06)
+
+
+### Bug Fixes
+
+* fix type errors, running tests ([3e7e313](https://github.com/jbedard/imuter/commit/3e7e313))
+
+
+### Features
+
+* allow some freeze calls to be removed in production mode ([885fde1](https://github.com/jbedard/imuter/commit/885fde1))
+
+
+
 <a name="0.0.11"></a>
 ## [0.0.11](https://github.com/jbedard/imuter/compare/v0.0.10...v0.0.11) (2018-02-28)
 
