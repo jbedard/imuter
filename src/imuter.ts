@@ -1,6 +1,7 @@
 "use strict";
 
 //Should be determined at compile time to allow tree-shaking
+/* tslint:disable-next-line */
 const FREEZING_ENABLED = typeof process !== "undefined" && process.env.NODE_ENV !== "production";
 
 const NO_FREEZE_MSG = "Freezing a Window, global, Node, Blob, TypedArray or ArrayBuffer is unsupported";
