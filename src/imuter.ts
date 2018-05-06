@@ -38,7 +38,7 @@ export function recursiveFreeze(value: any): any {
     }
 
     //Unfreezable
-    if (+(<any>value).nodeType) {
+    if (+value.nodeType) {
         throw new Error(NO_FREEZE_MSG);
     }
 
@@ -356,7 +356,7 @@ export function removeValues<T = any>(data: ReadonlyObjectInput<T>, ...keys: Arr
 
     for (const key of keys) {
         if (data.hasOwnProperty(key)) {
-            if (undefined === newValue) {
+            if (newValue === undefined) {
                 newValue = shallowCloneObject(data);
             }
             delete newValue[key];
