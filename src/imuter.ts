@@ -183,13 +183,13 @@ export function array_exclude<T>(arr: ReadonlyArrayInput<T>, value: T): Readonly
 }
 
 export function array_replace<T>(arr: ReadonlyArrayInput<T>, oldValue: T, newValue: T): ReadonlyArray<T> {
-    deepFreeze(newValue);
+    FREEZING_ENABLED && deepFreeze(newValue);
 
     return array_map(arr, (v) => v === oldValue ? newValue : v);
 }
 
 export function array_push<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
-    deepFreeze(values);
+    FREEZING_ENABLED && deepFreeze(values);
 
     const newArr = arr.slice();
     newArr.push(...values);
@@ -217,7 +217,7 @@ export function array_pop<T>(arr: ReadonlyArrayInput<T>): ReadonlyArray<T> {
 }
 
 export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
-    deepFreeze(values);
+    FREEZING_ENABLED && deepFreeze(values);
 
     const newArr = arr.slice();
     newArr.unshift(...values);
@@ -229,7 +229,7 @@ export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: 
 }
 
 export function array_insert<T>(arr: ReadonlyArrayInput<T>, index: number, ...values: T[]): ReadonlyArray<T> {
-    deepFreeze(values);
+    FREEZING_ENABLED && deepFreeze(values);
 
     const newArr = arr.slice();
     newArr.splice(index, 0, ...values);

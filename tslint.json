@@ -55,7 +55,7 @@
         "no-unnecessary-class": true,
         // "no-unsafe-any": true,
         "no-unsafe-finally": true,
-        "no-unused-expression": true,
+        // "no-unused-expression": true,
         "no-unused-variable": true,
         "no-use-before-declare": true,
         "no-void-expression": true,
