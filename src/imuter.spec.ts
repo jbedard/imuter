@@ -102,7 +102,7 @@ describe("freezing", function() {
     });
 
     it("should work with [object].map method", function() {
-        const a = [new Point()].map<Point>(imuter);
+        const a = [new Point()].map<Point>(imuter as any);  //TODO: why the <any> cast?
         const i0: Point = a[0];
 
         expect(i0).toBeFrozen();

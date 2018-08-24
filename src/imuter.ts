@@ -335,7 +335,7 @@ export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T>(data:
 export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(data: ReadonlyObjectInput<T>, path: [K1, K2, K3], values: Partial<T[K1][K2][K3]>): Readonly<T>;
 export function writeValues<T>(data: ReadonlyObjectInput<T>, path: Array<string | number>, values: {[k: string]: any}): Readonly<T>;
 export function writeValues<T>(data: T, pathOrKey: Array<string | number> | number | keyof T, values: {[k: string]: any}) {
-    const path = Array.isArray(pathOrKey) ? pathOrKey : [pathOrKey];
+    const path = Array.isArray(pathOrKey) ? pathOrKey : [<string | number>pathOrKey];
     const oldValue = read(data, path);
     const newValue = object_assign(oldValue, values);
     return writeValue<T>(data, path, newValue);
