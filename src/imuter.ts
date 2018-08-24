@@ -178,8 +178,12 @@ export function array_remove<T>(arr: ReadonlyArrayInput<T>, index: number, delet
     return shallowFreeze(newArr);
 }
 
+function notEqualThis(this: any, x: any) {
+    return x !== this;
+}
+
 export function array_exclude<T>(arr: ReadonlyArrayInput<T>, value: T): ReadonlyArray<T> {
-    return array_filter(arr, (v) => v !== value);
+    return array_filter(arr, notEqualThis, value);
 }
 
 export function array_replace<T>(arr: ReadonlyArrayInput<T>, oldValue: T, newValue: T): ReadonlyArray<T> {
