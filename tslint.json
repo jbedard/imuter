@@ -85,6 +85,7 @@
         "callable-types": true,
         "class-name": true,
         "encoding": true,
+        "file-name-casing": [true, "kebab-case"],
         "import-spacing": true,
         "interface-over-type-literal": true,
         "match-default-export-name": true,
