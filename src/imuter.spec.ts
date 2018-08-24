@@ -541,6 +541,12 @@ describe("array_exclude", function() {
         const a = array_exclude(i, 0);
         expect(a).toBe(i);
     });
+
+    it("should be a noop when nothing is excluded out", function() {
+        const i: any[] = [1, 2];
+        const a = array_exclude(i, 3);
+        expect(a).toBe(i);
+    });
 });
 
 describe("array_replace", function() {
@@ -824,6 +830,12 @@ describe("array_filter", function() {
     it("should be a noop when empty", function() {
         const i: any[] = [];
         const a = array_filter(i, function(v: number) { return false; });
+        expect(a).toBe(i);
+    });
+
+    it("should be a noop when nothing is filtered out", function() {
+        const i: any[] = [1, 2];
+        const a = array_filter(i, v => true);
         expect(a).toBe(i);
     });
 

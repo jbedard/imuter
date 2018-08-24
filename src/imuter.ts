@@ -255,7 +255,7 @@ export function array_filter<T>(arr: ReadonlyArrayInput<T>, callbackfn: (value: 
     }
 
     const filtered = (arr as ReadonlyArray<T>).filter(callbackfn, context);
-    return shallowFreeze(filtered);
+    return (filtered.length === arr.length) ? arr : shallowFreeze(filtered);
 }
 
 
