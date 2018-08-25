@@ -32,11 +32,12 @@
     "karma-jasmine": "1.1",
     "karma-typescript": "3.0",
     "tslint": "5.11",
-    "typescript": "2.9"
+    "typescript": "2.9",
+    "uglify-es": "3.3"
   },
-  "dependencies": {},
   "scripts": {
     "build": "tsc",
+    "uglify": "uglifyjs -c -m --toplevel --define process.env.NODE_ENV='production' --define FREEZING_ENABLED=false -o dist/imuter.min.js dist/imuter.js",
     "test": "karma start karma.conf.js --single-run --browsers ChromeHeadless",
     "test-server": "karma start karma.conf.js",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
