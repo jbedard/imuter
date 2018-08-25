@@ -12,21 +12,21 @@ const toString = {}.toString;
 export type ReadonlyArrayInput<T> = ReadonlyArray<T> | T[];
 export type ReadonlyObjectInput<T> = Readonly<T> | T;
 
-export function recursiveFreeze(value: number): number;
-export function recursiveFreeze(value: string): string;
-export function recursiveFreeze(value: boolean): boolean;
-export function recursiveFreeze(value: symbol): symbol;
-export function recursiveFreeze(value: null): null;
-export function recursiveFreeze(value: undefined): undefined;
-export function recursiveFreeze(value: ReadonlyArrayInput<number>): ReadonlyArray<number>;
-export function recursiveFreeze(value: ReadonlyArrayInput<string>): ReadonlyArray<string>;
-export function recursiveFreeze(value: ReadonlyArrayInput<boolean>): ReadonlyArray<boolean>;
-export function recursiveFreeze(value: ReadonlyArrayInput<symbol>): ReadonlyArray<symbol>;
-export function recursiveFreeze(value: ReadonlyArrayInput<null>): ReadonlyArray<null>;
-export function recursiveFreeze(value: ReadonlyArrayInput<undefined>): ReadonlyArray<undefined>;
-export function recursiveFreeze<T>(value: ReadonlyArrayInput<T>): ReadonlyArray<T>;
-export function recursiveFreeze<T>(value: ReadonlyObjectInput<T>): Readonly<T>;
-export function recursiveFreeze(value: any): any {
+function recursiveFreeze(value: number): number;
+function recursiveFreeze(value: string): string;
+function recursiveFreeze(value: boolean): boolean;
+function recursiveFreeze(value: symbol): symbol;
+function recursiveFreeze(value: null): null;
+function recursiveFreeze(value: undefined): undefined;
+function recursiveFreeze(value: ReadonlyArrayInput<number>): ReadonlyArray<number>;
+function recursiveFreeze(value: ReadonlyArrayInput<string>): ReadonlyArray<string>;
+function recursiveFreeze(value: ReadonlyArrayInput<boolean>): ReadonlyArray<boolean>;
+function recursiveFreeze(value: ReadonlyArrayInput<symbol>): ReadonlyArray<symbol>;
+function recursiveFreeze(value: ReadonlyArrayInput<null>): ReadonlyArray<null>;
+function recursiveFreeze(value: ReadonlyArrayInput<undefined>): ReadonlyArray<undefined>;
+function recursiveFreeze<T>(value: ReadonlyArrayInput<T>): ReadonlyArray<T>;
+function recursiveFreeze<T>(value: ReadonlyObjectInput<T>): Readonly<T>;
+function recursiveFreeze(value: any): any {
     //Primitives
     switch (typeof value) {
         case "number":
