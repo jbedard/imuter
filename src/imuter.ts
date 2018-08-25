@@ -104,8 +104,8 @@ const deepFreeze: Freezer    = FREEZING_ENABLED ? recursiveFreeze : identity;
 export const imuter = deepFreeze;
 
 
-const DELETE_VALUE: any = Object.freeze({});
-const REMOVE_VALUE: any = Object.freeze({});
+const DELETE_VALUE: any = deepFreeze({});
+const REMOVE_VALUE: any = deepFreeze({});
 const REMOVE_VALUE_FN = valueFn(REMOVE_VALUE);
 
 function shallowCloneObject<T>(obj: T): T {
@@ -125,10 +125,12 @@ export function object_set<K extends keyof T, T>(obj: ReadonlyObjectInput<T> | T
         delete newObj[prop];
     }
     else {
-        newObj[prop] = <any>deepFreeze(value);
+        FREEZING_ENABLED && deepFreeze(value);
+        newObj[prop] = <any>value;
     }
 
-    return shallowFreeze(newObj);
+    FREEZING_ENABLED && shallowFreeze(newObj);
+    return newObj;
 }
 
 export function object_delete<T>(obj: ReadonlyObjectInput<T>, prop: keyof T): Readonly<T> {
@@ -140,7 +142,9 @@ export function object_assign<T, U>(a: T, b: U): Readonly<T & U>;
 export function object_assign<T, U, V>(a: T, b: U, c: V): Readonly<T & U & V>;
 export function object_assign<T, U, V, W>(a: T, b: U, c: V, d: W): Readonly<T & U & V & W>;
 export function object_assign(...sources: any[]): Readonly<any> {
-    return deepFreeze(Object.assign({}, ...sources));
+    const newObj = Object.assign({}, ...sources);
+    FREEZING_ENABLED && deepFreeze(newObj);
+    return newObj;
 }
 
 
@@ -159,9 +163,11 @@ export function array_set<T>(arr: ReadonlyArrayInput<T>, index: number, value: T
         newArr.splice(index, 1);
     }
     else {
-        newArr[index] = deepFreeze(value);
+        FREEZING_ENABLED && deepFreeze(value);
+        newArr[index] = value;
     }
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_delete<T>(arr: ReadonlyArrayInput<T>, index: number): ReadonlyArray<T> {
@@ -175,7 +181,8 @@ export function array_remove<T>(arr: ReadonlyArrayInput<T>, index: number, delet
 
     const newArr = arr.slice();
     newArr.splice(index, deleteCount);
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 function notEqualThis(this: any, x: any) {
@@ -193,11 +200,11 @@ export function array_replace<T>(arr: ReadonlyArrayInput<T>, oldValue: T, newVal
 }
 
 export function array_push<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
-    FREEZING_ENABLED && deepFreeze(values);
-
     const newArr = arr.slice();
     newArr.push(...values);
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && deepFreeze(values);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_shift<T>(arr: ReadonlyArrayInput<T>): ReadonlyArray<T> {
@@ -207,7 +214,8 @@ export function array_shift<T>(arr: ReadonlyArrayInput<T>): ReadonlyArray<T> {
 
     const newArr = arr.slice();
     newArr.shift();
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_pop<T>(arr: ReadonlyArrayInput<T>): ReadonlyArray<T> {
@@ -217,27 +225,30 @@ export function array_pop<T>(arr: ReadonlyArrayInput<T>): ReadonlyArray<T> {
 
     const newArr = arr.slice();
     newArr.pop();
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): ReadonlyArray<T> {
-    FREEZING_ENABLED && deepFreeze(values);
-
     const newArr = arr.slice();
     newArr.unshift(...values);
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && deepFreeze(values);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: number) {
-    return shallowFreeze(arr.slice(start, end));
+    const newArr = arr.slice(start, end);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_insert<T>(arr: ReadonlyArrayInput<T>, index: number, ...values: T[]): ReadonlyArray<T> {
-    FREEZING_ENABLED && deepFreeze(values);
-
     const newArr = arr.slice();
     newArr.splice(index, 0, ...values);
-    return shallowFreeze(newArr);
+    FREEZING_ENABLED && deepFreeze(values);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 export function array_map<T, U = any>(arr: ReadonlyArrayInput<T>, callbackfn: (value: T, index: number, array: ReadonlyArray<T>) => U, context?: any): ReadonlyArray<U> {
@@ -246,7 +257,8 @@ export function array_map<T, U = any>(arr: ReadonlyArrayInput<T>, callbackfn: (v
     }
 
     const mapped: U[] = (arr as ReadonlyArray<T>).map(callbackfn, context);
-    return deepFreeze(mapped);
+    FREEZING_ENABLED && deepFreeze(mapped);
+    return mapped;
 }
 
 export function array_filter<T>(arr: ReadonlyArrayInput<T>, callbackfn: (value: T, index: number, array: ReadonlyArray<T>) => any, context?: any): ReadonlyArray<T> {
@@ -255,7 +267,9 @@ export function array_filter<T>(arr: ReadonlyArrayInput<T>, callbackfn: (value: 
     }
 
     const filtered = (arr as ReadonlyArray<T>).filter(callbackfn, context);
-    return (filtered.length === arr.length) ? arr : shallowFreeze(filtered);
+    const newArr = (filtered.length === arr.length) ? arr : filtered;
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
 }
 
 
@@ -372,5 +386,6 @@ export function removeValues<T>(data: ReadonlyObjectInput<T>, ...keys: Array<key
         }
     }
 
-    return newValue ? shallowFreeze(newValue) : data;
+    FREEZING_ENABLED && shallowFreeze(newValue);
+    return newValue ? newValue : data;
 }
