@@ -4,7 +4,7 @@
 /* tslint:disable-next-line */
 const FREEZING_ENABLED = typeof process !== "undefined" && process.env.NODE_ENV !== "production";
 
-const NO_FREEZE_MSG = "Freezing a Window, global, Node, Blob, TypedArray or ArrayBuffer is unsupported";
+const NO_FREEZE_MSG = "Freezing a Window, global, Node, Blob, TypedArray, ArrayBuffer or XMLHttpRequest is unsupported";
 
 const toString = {}.toString;
 
@@ -63,6 +63,7 @@ function recursiveFreeze(value: any): any {
         case "[object DOMWindow]":
         case "[object Window]":
         case "[object global]":
+        case "[object XMLHttpRequest]":
             throw new Error(NO_FREEZE_MSG);
 
         //No need to recurse
