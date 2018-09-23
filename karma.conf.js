@@ -34,6 +34,10 @@ module.exports = function(config) {
                 //Enabled coverage when running in non-server mode
                 instrumentation: config.singleRun
             },
+            exclude: {
+                mode: "merge",
+                values: ["type-specs"]
+            },
             compilerOptions: Object.assign(
                 JSON.parse(fs.readFileSync("./tsconfig.json", {encoding: "utf8"})).compilerOptions,
                 {module: undefined}

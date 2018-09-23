@@ -237,7 +237,7 @@ export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): Re
     return newArr;
 }
 
-export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: number) {
+export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: number): ReadonlyArray<T> {
     const newArr = arr.slice(start, end);
     FREEZING_ENABLED && shallowFreeze(newArr);
     return newArr;
