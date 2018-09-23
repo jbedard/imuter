@@ -114,7 +114,7 @@ function shallowCloneObject<T>(obj: T): T {
 
 // Objects
 
-export function object_set<K extends keyof T, T>(obj: ReadonlyObjectInput<T> | T, prop: K, value: T[K]): Readonly<T> {
+export function object_set<K extends keyof T, T>(obj: ReadonlyObjectInput<T>, prop: K, value: T[K]): Readonly<T> {
     if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(prop in <any>obj) : obj[prop] === value) {
         return obj;
     }
@@ -373,7 +373,7 @@ export function removeValue<T>(data: T, pathOrKey: Array<string | number> | keyo
     return write<T>(data, <any>pathOrKey, REMOVE_VALUE_FN);
 }
 
-//Delete multiple deep values
+//Delete multiple values
 export function removeValues<T>(data: ReadonlyObjectInput<T>, ...keys: Array<keyof T>): Readonly<T> {
     let newValue: T | undefined;
 
