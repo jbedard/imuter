@@ -6,6 +6,8 @@ import {
     write, writeValue, writeValues, removeValue, removeValues
 } from "./imuter";
 
+// tslint:disable: newline-per-chained-call
+
 
 class Point {
     public constructor(public x: number = 0, public y: number = 0) {}
