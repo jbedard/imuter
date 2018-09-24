@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "uglify": "uglifyjs -c -m --toplevel --define process.env.NODE_ENV='\"production\"' --define FREEZING_ENABLED=false -o dist/imuter.min.js dist/imuter.js",
+    "uglify": "uglifyjs -c -m --toplevel --define process.env.NODE_ENV='\"production\"' --define FREEZING_ENABLED=false --source-map 'content=dist/imuter.js.map' -o dist/imuter.min.js dist/imuter.js",
     "test": "karma start karma.conf.js --single-run --browsers ChromeHeadless",
     "test-server": "karma start karma.conf.js",
     "dtslint": "npx dtslint type-specs",
