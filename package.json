@@ -37,7 +37,9 @@
     "uglify-es": "3.3"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "yarn lint && yarn dtslint && yarn test && yarn compile && yarn uglify",
+    "clean": "rm -Rf dist coverage",
+    "compile": "tsc",
     "uglify": "uglifyjs -c -m --toplevel --define process.env.NODE_ENV='\"production\"' --define FREEZING_ENABLED=false --source-map 'content=dist/imuter.js.map' -o dist/imuter.min.js dist/imuter.js",
     "test": "karma start karma.conf.js --single-run --browsers ChromeHeadless",
     "test-server": "karma start karma.conf.js",
