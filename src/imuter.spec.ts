@@ -17,6 +17,7 @@ class Point {
 declare var window: any;
 declare var document: any;
 declare var Blob: any;
+declare var XMLHttpRequest: any;
 
 
 beforeEach(addMatchers);
@@ -240,7 +241,7 @@ describe("freezing", function() {
 });
 
 describe("unsupported", function() {
-    const NO_FREEZE_MSG = "Freezing a Window, global, Node, Blob, TypedArray or ArrayBuffer is unsupported";
+    const NO_FREEZE_MSG = "Freezing a Window, global, Node, Blob, TypedArray, ArrayBuffer or XMLHttpRequest is unsupported";
 
     it("should throw when passed Window", function() {
         expect(function() { imuter(window); }).toThrowError(NO_FREEZE_MSG);
@@ -296,6 +297,10 @@ describe("unsupported", function() {
 
     it("should throw when passed ArrayBuffer", function() {
         expect(function() { imuter(new ArrayBuffer(1)); }).toThrowError(NO_FREEZE_MSG);
+    });
+
+    it("should throw when passed XMLHttpRequest", function() {
+        expect(function() { imuter(new XMLHttpRequest()); }).toThrowError(NO_FREEZE_MSG);
     });
 });
 
