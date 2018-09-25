@@ -1,3 +1,20 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/jbedard/imuter/compare/v0.1.0...v0.3.0) (2018-09-25)
+
+
+### Bug Fixes
+
+* **object_assign:** support more then 4 objects being merged ([6b41b68](https://github.com/jbedard/imuter/commit/6b41b68))
+
+
+### Performance Improvements
+
+* allow freezing to be dropped completely in production ([332eb8f](https://github.com/jbedard/imuter/commit/332eb8f))
+* **array_exclude:** avoid creating a closure per invocation ([38205a9](https://github.com/jbedard/imuter/commit/38205a9))
+* **array_filter, array_exclude:** return same instance if nothing is filtered out/excluded ([21add86](https://github.com/jbedard/imuter/commit/21add86)), closes [#1](https://github.com/jbedard/imuter/issues/1)
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/jbedard/imuter/compare/492d240...v0.2.0) (2018-08-25)
 
