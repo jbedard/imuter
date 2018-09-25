@@ -49,3 +49,18 @@ object_assign({a: 2}, {a: "3"});
 
 // $ExpectType Readonly<Clazz>
 object_assign(new Clazz(), new Clazz());
+
+// $ExpectType Readonly<{ a: number; } & Clazz>
+object_assign({a: 2}, new Clazz());
+
+// $ExpectType Readonly<{ a: number; } & Clazz>
+object_assign({a: 2}, new Clazz(), new Clazz());
+
+// $ExpectType Readonly<{ a: number; } & Clazz>
+object_assign({a: 2}, new Clazz(), new Clazz(), new Clazz());
+
+// $ExpectType Readonly<{ a: number; } & Clazz>
+object_assign({a: 2}, new Clazz(), new Clazz(), new Clazz(), new Clazz());
+
+// $ExpectType Readonly<{ a: number; } & Clazz>
+object_assign({a: 2}, new Clazz(), new Clazz(), new Clazz(), new Clazz(), new Clazz());

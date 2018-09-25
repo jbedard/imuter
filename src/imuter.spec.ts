@@ -442,6 +442,17 @@ describe("object_assign", function() {
         expect(p.c).toBe(true);
         expect(p.d).toEqual({});
     });
+
+    it("should support variable args (5+)", function() {
+        const p = object_assign({a: 1}, {b: "2"}, {c: true}, {d: {}}, {e: 2}, {f: 3}, {g: 4});
+        expect(p.a).toBe(1);
+        expect(p.b).toBe("2");
+        expect(p.c).toBe(true);
+        expect(p.d).toEqual({});
+        expect(p.e).toBe(2);
+        expect(p.f).toBe(3);
+        expect(p.g).toBe(4);
+    });
 });
 
 describe("array_set", function() {

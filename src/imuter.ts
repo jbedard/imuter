@@ -192,9 +192,10 @@ export function object_assign<T, U, V, W>(a: T, b: U, c: V, d: W): Readonly<T & 
  * Shallow merge into a new JSON object.
  *
  * @param sources the objects to merge
- * @returns the `sources` merged into a new JSON object
+ * @returns `a`, `b`, `c`, `d` and all `sources` merged into a new JSON object
  */
-export function object_assign(...sources: any[]): Readonly<any> {
+export function object_assign<T, U, V, W, X>(a: T, b: U, c: V, d: W, ...sources: X[]): Readonly<T & U & V & W & X>;
+export function object_assign(...sources: any[]) {
     const newObj = Object.assign({}, ...sources);
     FREEZING_ENABLED && deepFreeze(newObj);
     return newObj;
