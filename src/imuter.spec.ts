@@ -44,6 +44,11 @@ describe("freezing", function() {
         expect(n).toBeNull();
     });
 
+    it("should work on unknown", function() {
+        const n = imuter(null as unknown);
+        expect(n).toBeNull();
+    });
+
     it("should work on plain objeccts", function() {
         const obj = {};
         const iobj: Readonly<{}> = imuter(obj);
@@ -230,7 +235,7 @@ describe("freezing", function() {
     });
 
     it("should work on nested calls with arrays", function() {
-        const a1: ReadonlyArray<number[]> = imuter([[1]]);
+        const a1: ReadonlyArray<ReadonlyArray<number>> = imuter([[1]]);
         const a2: ReadonlyArray<ReadonlyArray<number>> = imuter([imuter([1])]);
         const a3: ReadonlyArray<ReadonlyArray<number>> = imuter(imuter([[1]]));
         const a4: ReadonlyArray<ReadonlyArray<number>> = imuter([imuter([1]), [2]]);

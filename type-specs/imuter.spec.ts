@@ -21,20 +21,24 @@ const strOrNumOrBoo: string | number | boolean = <any> "s";
 const typeA: TypeA = {n: 3};
 const nestedType: NestedType = {a: {n: 3}};
 
+const symbolS = Symbol("s");
 
-// $ExpectType number
+const typeUnknown: unknown = <any> null;
+const typeNever: never = null as any as never;
+
+// $ExpectType 5
 imuter(5);
 
 // $ExpectType number
 imuter(num);
 
-// $ExpectType string
+// $ExpectType "s"
 imuter("s");
 
 // $ExpectType string
 imuter(str);
 
-// $ExpectType boolean
+// $ExpectType true
 imuter(true);
 
 // $ExpectType boolean
@@ -43,79 +47,91 @@ imuter(boo);
 // $ExpectType symbol
 imuter(Symbol("s"));
 
+// $ExpectType typeof symbolS
+imuter(symbolS);
+
 // $ExpectType null
 imuter(null);
 
 // $ExpectType undefined
 imuter(undefined);
 
+// $ExpectType unknown
+imuter(typeUnknown);
+
+// $ExpectType never
+imuter(typeNever);
+
 // $ExpectType string | undefined
 imuter(optionalStr);
 
-// $ExpectType ReadonlyArray<number>
+// $ExpectType readonly 5[]
 imuter([5]);
 
-// $ExpectType ReadonlyArray<number>
+// $ExpectType readonly number[]
 imuter([num]);
 
-// $ExpectType ReadonlyArray<number>
+// $ExpectType readonly number[]
 imuter(numA);
 
-// $ExpectType ReadonlyArray<string>
+// $ExpectType readonly "s"[]
 imuter(["s"]);
 
-// $ExpectType ReadonlyArray<string>
+// $ExpectType readonly string[]
 imuter([str]);
 
-// $ExpectType ReadonlyArray<string>
+// $ExpectType readonly string[]
 imuter(strA);
 
-// $ExpectType ReadonlyArray<string | undefined>
+// $ExpectType readonly (string | undefined)[]
 imuter([optionalStr]);
 
-// $ExpectType ReadonlyArray<boolean>
+// $ExpectType readonly true[]
 imuter([true]);
 
-// $ExpectType ReadonlyArray<boolean>
+// $ExpectType readonly boolean[]
 imuter([boo]);
 
-// $ExpectType ReadonlyArray<boolean>
+// $ExpectType readonly boolean[]
 imuter(imuter([boo]));
 
-// $ExpectType ReadonlyArray<boolean>
+// $ExpectType readonly boolean[]
 imuter(booA);
 
-// $ExpectType ReadonlyArray<symbol>
+// $ExpectType readonly symbol[]
 imuter([Symbol("s")]);
 
-// $ExpectType ReadonlyArray<null>
+// $ExpectType readonly (typeof symbolS)[]
+imuter([symbolS]);
+
+// $ExpectType readonly null[]
 imuter([null]);
 
-// $ExpectType ReadonlyArray<undefined>
+// $ExpectType readonly undefined[]
 imuter([undefined]);
 
-// $ExpectType ReadonlyArray<undefined>
+// $ExpectType readonly undefined[]
 imuter(imuter([undefined]));
 
 // $ExpectType string | number | boolean
 imuter(strOrNumOrBoo);
 
-// $ExpectType ReadonlyArray<string | number | boolean>
+// $ExpectType readonly (string | number | boolean)[]
 imuter([strOrNumOrBoo]);
 
-// $ExpectType ReadonlyArray<string | number | boolean>
+// $ExpectType readonly (string | number | boolean)[]
 imuter(imuter([strOrNumOrBoo]));
 
-// $ExpectType ReadonlyArray<string | number | boolean>
+// $ExpectType readonly (string | number | boolean)[]
 imuter([imuter(strOrNumOrBoo)]);
 
-// $ExpectType ReadonlyArray<Clazz>
+// $ExpectType readonly Readonly<Clazz>[]
 imuter([new Clazz()]);
 
-// $ExpectType ReadonlyArray<Readonly<Clazz>>
+// $ExpectType readonly Readonly<Clazz>[]
 imuter([imuter(new Clazz())]);
 
-// $ExpectType ReadonlyArray<Clazz>
+// $ExpectType readonly Readonly<Clazz>[]
 imuter(imuter([new Clazz()]));
 
 // $ExpectType Readonly<Clazz>
@@ -127,13 +143,13 @@ imuter(imuter(new Clazz()));
 // $ExpectType Readonly<TypeA>
 imuter(typeA);
 
-// $ExpectType ReadonlyArray<TypeA>
+// $ExpectType readonly Readonly<TypeA>[]
 imuter([typeA]);
 
-// $ExpectType ReadonlyArray<Readonly<TypeA>>
+// $ExpectType readonly Readonly<TypeA>[]
 imuter([imuter(typeA)]);
 
-// $ExpectType ReadonlyArray<TypeA>
+// $ExpectType readonly Readonly<TypeA>[]
 imuter(imuter([typeA]));
 
 // $ExpectType Readonly<NestedType>

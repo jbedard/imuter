@@ -23,6 +23,7 @@
     "@types/jasmine": "2.8",
     "@types/node": "8.0",
     "conventional-changelog-cli": "2.0",
+    "dtslint": "0.7",
     "istanbul": "0.4",
     "jasmine": "3.2",
     "jasmine-core": "3.2",
@@ -30,10 +31,9 @@
     "karma-chrome-launcher": "2.2",
     "karma-coverage": "1.1",
     "karma-jasmine": "1.1",
-    "karma-typescript": "3.0",
-    "npx": "10.2",
+    "karma-typescript": "4.1",
     "tslint": "5.11",
-    "typescript": "2.9",
+    "typescript": "3.5",
     "uglify-es": "3.3"
   },
   "scripts": {
@@ -43,7 +43,7 @@
     "uglify": "uglifyjs -c -m --toplevel --define process.env.NODE_ENV='\"production\"' --define FREEZING_ENABLED=false --source-map 'content=dist/imuter.js.map' -o dist/imuter.min.js dist/imuter.js",
     "test": "karma start karma.conf.js --single-run --browsers ChromeHeadless",
     "test-server": "karma start karma.conf.js",
-    "dtslint": "npx dtslint type-specs",
+    "dtslint": "dtslint type-specs",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "changelog": "conventional-changelog --infile ./CHANGELOG.md --same-file --release-count 1 --preset angular"
   }
