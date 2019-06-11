@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/jasmine": "3.3",
-    "@types/node": "8.0",
+    "@types/node": "12",
     "conventional-changelog-cli": "2.0",
     "dtslint": "0.7",
     "istanbul": "0.4",
