@@ -490,7 +490,7 @@ describe("array_set", function() {
     });
 
     it("should freeze the set content", function() {
-        const a = array_set([0, 1], 1, {});
+        const a = array_set([0, 1, {}], 1, {});
         expect(a[1]).toEqual({});
         expect(a[1]).toBeFrozen();
     });

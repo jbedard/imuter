@@ -29,7 +29,7 @@
     "@types/jasmine": "3.3",
     "@types/node": "12",
     "conventional-changelog-cli": "2.0",
-    "dtslint": "0.7",
+    "dtslint": "0.9",
     "istanbul": "0.4",
     "jasmine": "3.4",
     "jasmine-core": "3.4",
@@ -39,7 +39,7 @@
     "karma-jasmine": "2.0",
     "karma-typescript": "4.1",
     "tslint": "5.17",
-    "typescript": "3.5",
+    "typescript": "3.6",
     "uglify-es": "3.3"
   },
   "scripts": {
