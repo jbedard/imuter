@@ -1,3 +1,21 @@
+## [0.5.1](https://github.com/jbedard/imuter/compare/v0.5.0...v0.5.1) (2019-08-29)
+
+
+### Bug Fixes
+
+* **umd:** add amd module-name to UMD bundle ([622b6a9](https://github.com/jbedard/imuter/commit/622b6a9))
+
+
+
+# [0.5.0](https://github.com/jbedard/imuter/compare/v0.4.0...v0.5.0) (2019-08-29)
+
+
+### Features
+
+* provide various bundle types via APF ([3edca86](https://github.com/jbedard/imuter/commit/3edca86))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/jbedard/imuter/compare/v0.1.0...v0.3.0) (2018-09-25)
 
