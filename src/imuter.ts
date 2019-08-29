@@ -1,3 +1,5 @@
+ /// <amd-module name="imuter" />
+
 "use strict";
 
 //Should be determined at compile time to allow tree-shaking
