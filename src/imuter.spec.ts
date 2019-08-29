@@ -801,6 +801,18 @@ describe("array_insert", function() {
         expect(a).toEqual([0, 3, 4, 1, 2]);
     });
 
+    it("should insert at beginning of array when index is before bounds", function() {
+        const i = [0];
+        const a = array_insert(i, -5, 1);
+        expect(a).toEqual([1, 0]);
+    });
+
+    it("should insert at end of array when index is after bounds", function() {
+        const i = [0];
+        const a = array_insert(i, 5, 1);
+        expect(a).toEqual([0, 1]);
+    });
+
     it("should deep freeze the inserted content", function() {
         const inserted = {a: {b: {c: 1}}};
         const a = array_insert<any>([0], 1, inserted);
