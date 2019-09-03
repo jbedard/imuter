@@ -1,4 +1,10 @@
-/// <reference path="../test/jasmine-matchers.d.ts" />
+declare global {
+    namespace jasmine {
+        interface Matchers<T> {
+            toBeFrozen(expectationFailOutput?: any): boolean;
+        }
+    }
+}
 
 export function addMatchers() {
     jasmine.addMatchers({toBeFrozen});
