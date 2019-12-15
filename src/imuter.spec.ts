@@ -832,7 +832,7 @@ describe("array_map", function() {
 
     it("should be a noop when empty", function() {
         const i: any[] = [];
-        const a = array_map(i, function(v) { return v + 1; });
+        const a = array_map(i, function(v) { throw new Error("no run me"); });
         expect(a).toBe(i);
     });
 

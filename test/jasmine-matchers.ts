@@ -14,8 +14,8 @@ function toBeFrozen(util: jasmine.MatchersUtil, customEqualityTesters: jasmine.C
     return {
         compare(actual: any, expectationFailOutput?: any) {
             return {
-                pass: Object.isFrozen(actual),
-                message: expectationFailOutput || `Expected ${actual} to be frozen`
+                message: expectationFailOutput || `Expected ${actual} to be frozen`,
+                pass: Object.isFrozen(actual)
             };
         }
     };
