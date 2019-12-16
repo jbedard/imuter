@@ -40,7 +40,10 @@ module.exports = function(config) {
             },
             compilerOptions: Object.assign(
                 JSON.parse(fs.readFileSync("./tsconfig.json", {encoding: "utf8"})).compilerOptions,
-                {module: undefined}
+                {
+                    module: undefined,
+                    target: "es5"
+                }
             )
         },
 
