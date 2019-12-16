@@ -26,7 +26,8 @@ module.exports = function(config) {
         },
 
         preprocessors: {
-            "**/*.ts": ["karma-typescript"]
+            "src/*.ts": ["karma-typescript"],
+            "test/*.ts": ["karma-typescript"]
         },
 
         karmaTypescriptConfig: {
@@ -38,13 +39,11 @@ module.exports = function(config) {
                 mode: "merge",
                 values: ["type-specs"]
             },
-            compilerOptions: Object.assign(
-                JSON.parse(fs.readFileSync("./tsconfig.json", {encoding: "utf8"})).compilerOptions,
-                {
-                    module: undefined,
-                    target: "es5"
-                }
-            )
+            tsconfig: "./tsconfig.json",
+            compilerOptions: {
+                module: undefined,
+                target: "es5"
+            }
         },
 
         port: 9876,
