@@ -10,7 +10,7 @@ export function addMatchers() {
     jasmine.addMatchers({toBeFrozen});
 }
 
-function toBeFrozen(util: jasmine.MatchersUtil, customEqualityTesters: jasmine.CustomEqualityTester[]): jasmine.CustomMatcher {
+function toBeFrozen(util: jasmine.MatchersUtil, customEqualityTesters: readonly jasmine.CustomEqualityTester[]): jasmine.CustomMatcher {
     return {
         compare(actual: any, expectationFailOutput?: any) {
             return {
