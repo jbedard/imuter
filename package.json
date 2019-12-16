@@ -58,5 +58,8 @@
     "dtslint": "dtslint type-specs",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json",
     "changelog": "conventional-changelog --infile ./CHANGELOG.md --same-file --release-count 1 --preset angular"
+  },
+  "peerDependencies": {
+    "tslib": "^1.10.0"
   }
 }
