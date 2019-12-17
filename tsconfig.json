@@ -21,6 +21,11 @@
 
         "outDir": "dist",
 
+        "baseUrl": ".",
+        "paths": {
+            "imuter": ["src/imuter.ts"]
+        },
+
         "noImplicitReturns": true,
         "strict": true
     },

@@ -41,7 +41,7 @@ module.exports = function(config) {
             },
             tsconfig: "./tsconfig.json",
             compilerOptions: {
-                module: undefined,
+                module: "commonjs",
                 target: "es5"
             }
         },

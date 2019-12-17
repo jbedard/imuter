@@ -4,7 +4,8 @@ import {
     object_assign, object_delete, object_set,
     array_delete, array_exclude, array_replace, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
     write, writeValue, writeValues, removeValue, removeValues
-} from "./imuter";
+// tslint:disable-next-line: no-implicit-dependencies
+} from "imuter";
 
 // tslint:disable: newline-per-chained-call
 
