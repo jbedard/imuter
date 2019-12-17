@@ -427,6 +427,25 @@ export function array_filter<T>(arr: ReadonlyArrayInput<T>, filterFn: (value: T,
     return newArr;
 }
 
+/**
+ * Sort an array
+ *
+ * @param arr the array
+ * @param sortFn the sort comparison function
+ * @returns a new sorted array
+ */
+export function array_sort<T>(arr: ReadonlyArrayInput<T>, sortFn: (a: T, b: T) => number): readonly T[] {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const newArr = arr
+        .slice()
+        .sort(sortFn);
+    FREEZING_ENABLED && shallowFreeze(newArr);
+    return newArr;
+}
+
 
 /**
  * Set an array entry via factory method.

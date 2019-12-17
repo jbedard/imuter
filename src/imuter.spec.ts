@@ -2,7 +2,7 @@ import { addMatchers } from "../test/jasmine-matchers";
 import {
     imuter,
     object_assign, object_delete, object_set,
-    array_delete, array_exclude, array_replace, array_remove, array_set, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
+    array_delete, array_exclude, array_replace, array_remove, array_set, array_sort, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
     write, writeValue, writeValues, removeValue, removeValues
 // tslint:disable-next-line: no-implicit-dependencies
 } from "imuter";
@@ -878,6 +878,32 @@ describe("array_filter", function() {
     it("should return a filtered array", function() {
         const a = array_filter([0, 1, 2, 3], function(n: number, i, a2) { return a2[i] === n && n % 2 === 0; });
         expect(a).toEqual([0, 2]);
+    });
+});
+
+describe("array_sort", function() {
+    it("should return a new frozen array", function() {
+        const i = [0, 1];
+        const a = array_sort(i, (f, s) => 0);
+        expect(a).toBeFrozen();
+        expect(a).not.toBe(i);
+    });
+
+    it("should be a noop when empty", function() {
+        const i: any[] = [];
+        const a = array_sort(i, (f, s) => 0);
+        expect(a).toBe(i);
+    });
+
+    it("should be a noop when single-item", function() {
+        const i: any[] = [1];
+        const a = array_sort(i, (f, s) => 0);
+        expect(a).toBe(i);
+    });
+
+    it("should return a sorted array based on comparitor function", function() {
+        const a = array_sort([2, 5, 3, 4, 0, 1], (f, s) => (f - s));
+        expect(a).toEqual([0, 1, 2, 3, 4, 5]);
     });
 });
 
