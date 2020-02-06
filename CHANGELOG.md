@@ -1,3 +1,19 @@
+# [0.6.0](https://github.com/jbedard/imuter/compare/v0.5.0...v0.6.0) (2020-02-06)
+
+
+### Bug Fixes
+
+* add tslib as a peerDependency ([3701c43](https://github.com/jbedard/imuter/commit/3701c43843c7976a6316b18e256b9c95115c7d1b))
+* **jasmine:** remove use of /// <reference ...> ([a764f81](https://github.com/jbedard/imuter/commit/a764f81eb11c3f5bcae15619e7f9f709178f363e))
+* **umd:** add amd module-name to UMD bundle ([622b6a9](https://github.com/jbedard/imuter/commit/622b6a9f7ce6ff31d389247fc0958e661a8b9fcd))
+
+
+### Features
+
+* **array_sort:** add array sort method ([2a534b0](https://github.com/jbedard/imuter/commit/2a534b0928851f2930d603212a6499b613c5ff57))
+
+
+
 ## [0.5.1](https://github.com/jbedard/imuter/compare/v0.5.0...v0.5.1) (2019-08-29)
 
 
