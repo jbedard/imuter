@@ -410,7 +410,7 @@ describe("object_delete", function() {
 describe("object_assign", function() {
     it("should invoke Object.assign", function() {
         const assignSpy = spyOn(Object, "assign");
-        const o = object_assign({a: 1}, {b: 2}, {c: 3});
+        object_assign({a: 1}, {b: 2}, {c: 3});
         expect(assignSpy).toHaveBeenCalledWith({}, {a: 1}, {b: 2}, {c: 3});
     });
 
@@ -839,14 +839,14 @@ describe("array_insert", function() {
 describe("array_map", function() {
     it("should return a frozen array", function() {
         const i = [0];
-        const a = array_map(i, function(v) { return v + 1; });
+        const a = array_map(i, (v) => v + 1);
         expect(a).toBeFrozen();
         expect(a).not.toBe(i);
     });
 
     it("should be a noop when empty", function() {
         const i: any[] = [];
-        const a = array_map(i, function(v) { throw new Error("no run me"); });
+        const a = array_map(i, function() { throw new Error("no run me"); });
         expect(a).toBe(i);
     });
 
@@ -856,13 +856,13 @@ describe("array_map", function() {
     });
 
     it("should freeze new array content", function() {
-        const a = array_map([0, 1], function(v: number) { return {}; });
+        const a = array_map([0, 1], () => ({}));
         expect(a[0]).toBeFrozen();
         expect(a[1]).toBeFrozen();
     });
 
     it("should deep freeze new array content", function() {
-        const a = array_map([2, 3], function(v: number, i) { return {key: [i]}; });
+        const a = array_map([2, 3], function(_: number, i) { return {key: [i]}; });
         expect(a[0].key).toBeFrozen();
         expect(a[1].key).toBeFrozen();
     });
@@ -871,20 +871,20 @@ describe("array_map", function() {
 describe("array_filter", function() {
     it("should return a new frozen array", function() {
         const i = [0];
-        const a = array_filter(i, function(v: number) { return false; });
+        const a = array_filter(i, () => false);
         expect(a).toBeFrozen();
         expect(a).not.toBe(i);
     });
 
     it("should be a noop when empty", function() {
         const i: any[] = [];
-        const a = array_filter(i, function(v: number) { return false; });
+        const a = array_filter(i, () => false);
         expect(a).toBe(i);
     });
 
     it("should be a noop when nothing is filtered out", function() {
         const i: any[] = [1, 2];
-        const a = array_filter(i, v => true);
+        const a = array_filter(i, () => true);
         expect(a).toBe(i);
     });
 
@@ -897,20 +897,20 @@ describe("array_filter", function() {
 describe("array_sort", function() {
     it("should return a new frozen array", function() {
         const i = [0, 1];
-        const a = array_sort(i, (f, s) => 0);
+        const a = array_sort(i, () => 0);
         expect(a).toBeFrozen();
         expect(a).not.toBe(i);
     });
 
     it("should be a noop when empty", function() {
         const i: any[] = [];
-        const a = array_sort(i, (f, s) => 0);
+        const a = array_sort(i, () => 0);
         expect(a).toBe(i);
     });
 
     it("should be a noop when single-item", function() {
         const i: any[] = [1];
-        const a = array_sort(i, (f, s) => 0);
+        const a = array_sort(i, () => 0);
         expect(a).toBe(i);
     });
 
