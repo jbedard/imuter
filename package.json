@@ -60,6 +60,6 @@
     "changelog": "conventional-changelog --infile ./CHANGELOG.md --same-file --release-count 1 --preset angular"
   },
   "peerDependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^2.0.0"
   }
 }
