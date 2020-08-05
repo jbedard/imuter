@@ -1,7 +1,5 @@
 "use strict";
 
-const fs = require("fs");
-
 module.exports = function(config) {
     config.set({
         basePath: "",
@@ -16,7 +14,6 @@ module.exports = function(config) {
 
         files: [
             {pattern: "src/**/*.ts"},
-            {pattern: "test/**/*.ts"}
         ],
 
         reporters: ["progress", "karma-typescript"],
@@ -26,8 +23,7 @@ module.exports = function(config) {
         },
 
         preprocessors: {
-            "src/*.ts": ["karma-typescript"],
-            "test/*.ts": ["karma-typescript"]
+            "src/**/*.ts": ["karma-typescript"],
         },
 
         karmaTypescriptConfig: {
@@ -39,7 +35,7 @@ module.exports = function(config) {
                 mode: "merge",
                 values: ["type-specs"]
             },
-            tsconfig: "./tsconfig.json",
+            tsconfig: "./tsconfig-test.json",
             compilerOptions: {
                 module: "commonjs",
                 target: "es5"

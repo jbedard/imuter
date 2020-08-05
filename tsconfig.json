@@ -21,17 +21,14 @@
 
         "outDir": "dist",
 
-        "baseUrl": ".",
-        "paths": {
-            "imuter": ["src/imuter.ts"]
-        },
+        "baseUrl": "src",
 
         "strict": true
     },
 
-    "include": [
-        "src/",
-        "test/"
+    "files": [
+        "src/imuter.ts",
+        "src/test/jasmine-matchers.ts"
     ],
 
     "exclude": [

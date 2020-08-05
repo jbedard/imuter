@@ -1,4 +1,4 @@
-import { addMatchers } from "../test/jasmine-matchers";
+import { addMatchers } from "./test/jasmine-matchers";
 import {
     imuter,
     object_assign, object_delete, object_set,

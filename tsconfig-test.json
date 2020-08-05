@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.json",
+    
+    "paths": {
+        "imuter": ["src/imuter.ts"]
+    },
+
+    "files": [
+        "src/imuter.ts",
+        "src/imuter.spec.ts",
+        "src/test/jasmine-matchers.ts"
+    ],
+}
