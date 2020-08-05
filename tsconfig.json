@@ -26,7 +26,6 @@
             "imuter": ["src/imuter.ts"]
         },
 
-        "noImplicitReturns": true,
         "strict": true
     },
 
