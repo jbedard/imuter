@@ -248,67 +248,80 @@ describe("freezing", function() {
     });
 });
 
-describe("unsupported", function() {
-    const NO_FREEZE_MSG = "Freezing a Window, global, Node, Blob, TypedArray, ArrayBuffer or XMLHttpRequest is unsupported";
-
+describe("unfreezable", function() {
     it("should throw when passed Window", function() {
-        expect(function() { imuter(window); }).toThrowError(NO_FREEZE_MSG);
+        const o = window;
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed nested Window", function() {
-        expect(function() { imuter([window]); }).toThrowError(NO_FREEZE_MSG);
+        const o = [window];
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed a DOM document", function() {
-        expect(function() { imuter(window.document); }).toThrowError(NO_FREEZE_MSG);
+        const o = window.document;
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed a DOM Node", function() {
-        expect(function() { imuter(document.body); }).toThrowError(NO_FREEZE_MSG);
+        const o = document.body;
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Blob", function() {
-        expect(function() { imuter(new Blob()); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Blob();
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Int8Array", function() {
-        expect(function() { imuter(new Int8Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Int8Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Int16Array", function() {
-        expect(function() { imuter(new Int16Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Int16Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Float32Array", function() {
-        expect(function() { imuter(new Float32Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Float32Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Float64Array", function() {
-        expect(function() { imuter(new Float64Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Float64Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Uint8Array", function() {
-        expect(function() { imuter(new Uint8Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Uint8Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Uint8ClampedArray", function() {
-        expect(function() { imuter(new Uint8ClampedArray(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Uint8ClampedArray(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Uint16Array", function() {
-        expect(function() { imuter(new Uint16Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Uint16Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed Uint32Array", function() {
-        expect(function() { imuter(new Uint32Array(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new Uint32Array(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed ArrayBuffer", function() {
-        expect(function() { imuter(new ArrayBuffer(1)); }).toThrowError(NO_FREEZE_MSG);
+        const o = new ArrayBuffer(1);
+        expect(imuter(o)).toBe(o);
     });
 
     it("should throw when passed XMLHttpRequest", function() {
-        expect(function() { imuter(new XMLHttpRequest()); }).toThrowError(NO_FREEZE_MSG);
+        const o = new XMLHttpRequest();
+        expect(imuter(o)).toBe(o);
     });
 });
 
