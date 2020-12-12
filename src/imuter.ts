@@ -3,9 +3,9 @@
 "use strict";
 
 //Should be determined at compile time to allow tree-shaking
-/* tslint:disable-next-line */
 const FREEZING_ENABLED = typeof process !== "undefined" && process.env.NODE_ENV !== "production";
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 const toString = {}.toString;
 
 /**
@@ -142,7 +142,7 @@ export function object_set<K extends keyof T, T extends object>(obj: ReadonlyObj
     }
     else {
         FREEZING_ENABLED && deepFreeze(value);
-        newObj[prop] = <any>value;
+        newObj[prop] = value;
     }
 
     FREEZING_ENABLED && shallowFreeze(newObj);
@@ -249,7 +249,7 @@ export function array_delete<T>(arr: ReadonlyArrayInput<T>, index: number): read
  * @param deleteCount the number of entries to remove (default: 1)
  * @returns a new (frozen) instance of the array with `deleteCount` entries removed at `index`
  */
-export function array_remove<T>(arr: ReadonlyArrayInput<T>, index: number, deleteCount: number = 1): readonly T[] {
+export function array_remove<T>(arr: ReadonlyArrayInput<T>, index: number, deleteCount = 1): readonly T[] {
     if (arr.length <= index || deleteCount === 0) {
         return arr;
     }
@@ -396,9 +396,9 @@ export function array_insert<T>(arr: ReadonlyArrayInput<T>, index: number, ...va
  * @param context the context to execute `callbackFn`
  * @returns a new mapped array
  */
-export function array_map<T, U = any>(arr: ReadonlyArrayInput<T>, callbackFn: (value: T, index: number, array: readonly T[]) => U, context?: any): readonly U[] {
+export function array_map<T, U = unknown, C = unknown>(arr: ReadonlyArrayInput<T>, callbackFn: (value: T, index: number, array: readonly T[]) => U, context?: C): readonly U[] {
     if (arr.length === 0) {
-        return <any>arr;
+        return arr as any;
     }
 
     const mapped: U[] = (arr as readonly T[]).map(callbackFn, context);
@@ -414,7 +414,7 @@ export function array_map<T, U = any>(arr: ReadonlyArrayInput<T>, callbackFn: (v
  * @param context the context to execute `filterFn`
  * @returns a new filtered array
  */
-export function array_filter<T>(arr: ReadonlyArrayInput<T>, filterFn: (value: T, index: number, array: readonly T[]) => any, context?: any): readonly T[] {
+export function array_filter<T, C = unknown>(arr: ReadonlyArrayInput<T>, filterFn: (value: T, index: number, array: readonly T[]) => unknown, context?: C): readonly T[] {
     if (arr.length === 0) {
         return arr;
     }

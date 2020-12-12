@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 declare global {
     namespace jasmine {
         interface Matchers<T> {

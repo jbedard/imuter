@@ -7,7 +7,7 @@ type-specs/*
 karma.conf.js
 tsconfig.json
 tsconfig-test.json
-tslint.json
+.eslintrc.json
 
 # npm
 node_modules/

@@ -4,10 +4,8 @@ import {
     object_assign, object_delete, object_set,
     array_delete, array_exclude, array_replace, array_remove, array_set, array_sort, array_push, array_pop, array_shift, array_unshift, array_slice, array_insert, array_map, array_filter,
     write, writeValue, writeValues, removeValue, removeValues
-// tslint:disable-next-line: no-implicit-dependencies
 } from "imuter";
 
-// tslint:disable: newline-per-chained-call
 
 
 class Point {
@@ -17,10 +15,10 @@ class Point {
 }
 
 
-declare var window: any;
-declare var document: any;
-declare var Blob: any;
-declare var XMLHttpRequest: any;
+declare let window: any;
+declare let document: any;
+declare let Blob: any;
+declare let XMLHttpRequest: any;
 
 
 beforeEach(addMatchers);
@@ -111,7 +109,7 @@ describe("freezing", function() {
     });
 
     it("should work with [object].map method", function() {
-        const a = [new Point()].map<Point>(imuter as any);  //TODO: why the <any> cast?
+        const a = [new Point()].map<Point>(imuter);
         const i0: Point = a[0];
 
         expect(i0).toBeFrozen();
@@ -168,7 +166,6 @@ describe("freezing", function() {
     });
 
     it("should work on Number instances", function() {
-        /* tslint:disable: no-construct */
         const v = new Number(5);
         const iv: Readonly<Number> = imuter(v);
         expect(iv).toBe(v);
@@ -176,7 +173,6 @@ describe("freezing", function() {
     });
 
     it("should work on Boolean instances", function() {
-        /* tslint:disable: no-construct */
         const v = new Boolean(false);
         const iv: Readonly<Boolean> = imuter(v);
         expect(iv).toBe(v);
@@ -184,7 +180,6 @@ describe("freezing", function() {
     });
 
     it("should work on String instances", function() {
-        /* tslint:disable: no-construct */
         const v = new String("v");
         const iv: Readonly<String> = imuter(v);
         expect(iv).toBe(v);
@@ -360,7 +355,7 @@ describe("object_set", function() {
         expect(o2.b).toBe(nv);
         expect(o2).toBeFrozen();
         expect(o2.a).toBeFrozen();
-        expect(o2.b!.v).toBeFrozen();
+        expect(o2.b?.v).toBeFrozen();
     });
 
     it("should support classes", function() {
@@ -1051,8 +1046,8 @@ describe("writeValue", function() {
         expect(o2.f).not.toBe(o.f);
         expect(o2.f[0]).toBe(o.f[0]);
         expect(o2.f[1]).not.toBe(o.f[1]);
-        expect((o2.f[1] as any).s.t).not.toBe((o.f[1] as any).s.t);
-        expect((o2.f[1] as any).s.t[0]).toBe(2);
+        expect(o2.f[1].s?.t).not.toBe(o.f[1].s?.t);
+        expect(o2.f[1].s?.t[0]).toBe(2);
     });
 
     it("should support mixed arrays/objects (root array)", function() {
@@ -1070,8 +1065,8 @@ describe("writeValue", function() {
         expect(o2[0].f).not.toBe(o[0].f);
         expect(o2[0].f[0]).toBe(o[0].f[0]);
         expect(o2[0].f[1]).not.toBe(o[0].f[1]);
-        expect((o2[0].f[1] as any).s.t).not.toBe((o[0].f[1] as any).s.t);
-        expect((o2[0].f[1] as any).s.t[0]).toBe(2);
+        expect(o2[0].f[1].s?.t).not.toBe(o[0].f[1].s?.t);
+        expect(o2[0].f[1].s?.t[0]).toBe(2);
     });
 
     it("should support writing functions as values", function() {
@@ -1186,7 +1181,7 @@ describe("write", function() {
         const o2 = write(o, ["nested", "nested", "foo"], f);
         expect(o2).not.toBe(o);
         expect(o2).toBeFrozen();
-        expect(o2.nested!.nested!.foo).toBe(2);
+        expect(o2.nested?.nested?.foo).toBe(2);
         expect(f).toHaveBeenCalledWith(3, o);
     });
 
@@ -1198,11 +1193,11 @@ describe("write", function() {
     it("should support types (nested)", function() {
         const o: ITypeInterface = {y: 3, z: {p: true}};
         const f = jasmine.createSpy("factory").and.returnValue(false);
-        const prop: string = ("p" as any);
+        const prop = "p";
         const o2 = write(o, ["z", prop], f);
         expect(o2).not.toBe(o);
         expect(o2).toBeFrozen();
-        expect(o2.z!.p).toBe(false);
+        expect(o2.z?.p).toBe(false);
         expect(f).toHaveBeenCalledWith(true, o);
     });
 
@@ -1410,8 +1405,8 @@ describe("removeValue", function() {
         expect(o2.f).not.toBe(o.f);
         expect(o2.f[0]).toBe(o.f[0]);
         expect(o2.f[1]).not.toBe(o.f[1]);
-        expect((o2.f[1] as any).s.t).not.toBe((o.f[1] as any).s.t);
-        expect(0 in (o2.f[1] as any).s.t).toBe(false);
+        expect(o2.f[1].s?.t).not.toBe(o.f[1].s?.t);
+        expect(o2.f[1].s?.t.hasOwnProperty(0)).toBe(false);
     });
 
     it("should support mixed arrays/objects (root array)", function() {
@@ -1429,8 +1424,8 @@ describe("removeValue", function() {
         expect(o2[0].f).not.toBe(o[0].f);
         expect(o2[0].f[0]).toBe(o[0].f[0]);
         expect(o2[0].f[1]).not.toBe(o[0].f[1]);
-        expect((o2[0].f[1] as any).s.t).not.toBe((o[0].f[1] as any).s.t);
-        expect(0 in (o2[0].f[1] as any).s.t).toBe(false);
+        expect(o2[0].f[1].s?.t).not.toBe(o[0].f[1].s?.t);
+        expect(o2[0].f[1].s?.t.hasOwnProperty(0)).toBe(false);
     });
 
     it("should splice out array values", function() {
