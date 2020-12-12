@@ -700,6 +700,12 @@ describe("array_push", function() {
         const a2 = array_push(a1, p2);
         expect(a2[1]).toBe(p2);
     });
+
+    it("should be a noop when no values passed", function() {
+        const i: any[] = [0];
+        const a = array_push(i);
+        expect(a).toBe(i);
+    });
 });
 
 describe("array_pop", function() {
@@ -762,6 +768,12 @@ describe("array_unshift", function() {
         expect(a).toEqual([1, 2, 3, 0]);
     });
 
+    it("should be a noop when not passed any values", function() {
+        const a = [0];
+        const b = array_unshift(a);
+        expect(a).toBe(b);
+    });
+
     it("should deep freeze the unshifted content", function() {
         const a = array_unshift<any>([{}], {a: {b: {c: 1}}});
         expect(a[0]).toEqual({a: {b: {c: 1}}});
@@ -772,7 +784,7 @@ describe("array_unshift", function() {
 
 describe("array_slice", function() {
     it("should return a new frozen array", function() {
-        const i = [0];
+        const i = [0, 1];
         const a = array_slice(i, 0, 1);
         expect(a).toBeFrozen();
         expect(a).not.toBe(i);
@@ -794,6 +806,24 @@ describe("array_slice", function() {
         const i = [0, 1, 2, 3];
         const a = array_slice(i, -2, 3);
         expect(a).toEqual([2]);
+    });
+
+    it("should be a noop when slicing from start without specifying end", function() {
+        const i = [0, 1, 2, 3];
+        const a = array_slice(i, 0);
+        expect(a).toBe(i);
+    });
+
+    it("should be a noop when slicing from start to end", function() {
+        const i = [0, 1, 2, 3];
+        const a = array_slice(i, 0, i.length);
+        expect(a).toBe(i);
+    });
+
+    it("should be a noop when slicing from start to after the end", function() {
+        const i = [0, 1, 2, 3];
+        const a = array_slice(i, 0, i.length + 5);
+        expect(a).toBe(i);
     });
 });
 
@@ -828,6 +858,12 @@ describe("array_insert", function() {
         expect(a[1]).toBe(inserted);
         expect(a[1]).toBeFrozen();
         expect(a[1].a.b).toBeFrozen();
+    });
+
+    it("should be a noop when not inserting anything", function() {
+        const i = [0];
+        const a = array_insert(i, 2);
+        expect(a).toBe(i);
     });
 });
 
@@ -877,22 +913,23 @@ describe("array_filter", function() {
         expect(a).toBe(i);
     });
 
+    it("should return a filtered frozen array", function() {
+        const a = array_filter([0, 1, 2, 3], function(n: number, i, a2) { return a2[i] === n && n % 2 === 0; });
+        expect(a).toBeFrozen();
+        expect(a).toEqual([0, 2]);
+    });
+
     it("should be a noop when nothing is filtered out", function() {
         const i: any[] = [1, 2];
         const a = array_filter(i, () => true);
         expect(a).toBe(i);
     });
-
-    it("should return a filtered array", function() {
-        const a = array_filter([0, 1, 2, 3], function(n: number, i, a2) { return a2[i] === n && n % 2 === 0; });
-        expect(a).toEqual([0, 2]);
-    });
 });
 
 describe("array_sort", function() {
     it("should return a new frozen array", function() {
-        const i = [0, 1];
-        const a = array_sort(i, () => 0);
+        const i = [1, 0];
+        const a = array_sort(i, (a, b) => a - b);
         expect(a).toBeFrozen();
         expect(a).not.toBe(i);
     });
@@ -909,9 +946,18 @@ describe("array_sort", function() {
         expect(a).toBe(i);
     });
 
+    it("should be a noop when order doesn't change", () => {
+        const i = [0, 1, 2];
+        const a = array_sort(i, (a, b) => a - b);
+        expect(a).toBe(i);
+    });
+
     it("should return a sorted array based on comparitor function", function() {
-        const a = array_sort([2, 5, 3, 4, 0, 1], (f, s) => (f - s));
-        expect(a).toEqual([0, 1, 2, 3, 4, 5]);
+        const a = [2, 5, 3, 4, 0, 1];
+        const b = array_sort(a, (f, s) => (f - s));
+
+        expect(b).not.toBe(a);
+        expect(b).toEqual([0, 1, 2, 3, 4, 5]);
     });
 });
 

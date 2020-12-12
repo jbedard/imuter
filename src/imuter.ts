@@ -299,6 +299,10 @@ export function array_replace<T>(arr: ReadonlyArrayInput<T>, oldValue: T, newVal
  * @returns a new (frozen) instance of the array with the values pushed
  */
 export function array_push<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): readonly T[] {
+    if (values.length === 0) {
+        return arr;
+    }
+
     const newArr = arr.slice();
     newArr.push(...values);
     FREEZING_ENABLED && deepFreeze(values);
@@ -338,8 +342,7 @@ export function array_pop<T>(arr: ReadonlyArrayInput<T>): readonly T[] {
         return arr;
     }
 
-    const newArr = arr.slice();
-    newArr.pop();
+    const newArr = arr.slice(0, -1);
     FREEZING_ENABLED && shallowFreeze(newArr);
     return newArr;
 }
@@ -351,6 +354,10 @@ export function array_pop<T>(arr: ReadonlyArrayInput<T>): readonly T[] {
  * @returns a new (frozen) instance of the array with the `values` `unshift`ed
  */
 export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): readonly T[] {
+    if (values.length === 0) {
+        return arr;
+    }
+
     const newArr = arr.slice();
     newArr.unshift(...values);
     FREEZING_ENABLED && deepFreeze(values);
@@ -367,6 +374,10 @@ export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): re
  * @returns a slice of the array
  */
 export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: number): readonly T[] {
+    if (start === 0 && (end === undefined || arr.length <= end)) {
+        return arr;
+    }
+
     const newArr = arr.slice(start, end);
     FREEZING_ENABLED && shallowFreeze(newArr);
     return newArr;
@@ -381,6 +392,10 @@ export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: 
  * @returns a new (frozen) instance of the array with the `values` inserted at `index`
  */
 export function array_insert<T>(arr: ReadonlyArrayInput<T>, index: number, ...values: T[]): readonly T[] {
+    if (values.length === 0) {
+        return arr;
+    }
+
     const newArr = arr.slice();
     newArr.splice(index, 0, ...values);
     FREEZING_ENABLED && deepFreeze(values);
@@ -425,6 +440,10 @@ export function array_filter<T, C = unknown>(arr: ReadonlyArrayInput<T>, filterF
     return newArr;
 }
 
+function arrayEqualsThis<T>(this: readonly T[], o: T, i: number) {
+    return o === this[i];
+}
+
 /**
  * Sort an array
  *
@@ -440,6 +459,11 @@ export function array_sort<T>(arr: ReadonlyArrayInput<T>, sortFn: (a: T, b: T) =
     const newArr = arr
         .slice()
         .sort(sortFn);
+
+    if (newArr.every(arrayEqualsThis, arr)) {
+        return arr;
+    }
+
     FREEZING_ENABLED && shallowFreeze(newArr);
     return newArr;
 }
