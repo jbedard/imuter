@@ -24,28 +24,19 @@ function recursiveFreeze<T extends object>(value: ReadonlyObjectInput<T>): Reado
 function recursiveFreeze(value: unknown): unknown;
 function recursiveFreeze(value: never): never;
 function recursiveFreeze(value: any): any {
-    //Primitives
-    switch (typeof value) {
-        case "number":
-        case "string":
-        case "boolean":
-        case "symbol":
-        case "undefined":
-            return value;
-    }
-
-    //Already frozen or already immutable, assume it was deep frozen
+    // Primitives, naturally frozen and already frozen.
+    // Assume it was deep frozen already as this must stop the recursion.
     if (Object.isFrozen(value)) {
         return value;
     }
 
-    //Unfreezable
+    // Unfreezable nodes, assuming a numeric nodeType is a DOM Node
     if (+value.nodeType) {
         return value;
     }
 
     switch (toString.call(value)) {
-        //Unfreezable types
+        //Unfreezable types via toString()
         case "[object Int8Array]":
         case "[object Int16Array]":
         case "[object Int32Array]":
