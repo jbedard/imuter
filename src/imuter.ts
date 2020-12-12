@@ -8,19 +8,12 @@ const FREEZING_ENABLED = typeof process !== "undefined" && process.env.NODE_ENV 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const toString = {}.toString;
 
-/**
- * An `Array` or `ReadonlyArray` of type `T`
- */
-export type ReadonlyArrayInput<T> = readonly T[] | T[];
-/**
- * An object (of type `T`) or `Readonly<T>`
- */
-export type ReadonlyObjectInput<T extends object> = Readonly<T> | T;
+export type PrimitiveType = number | string | boolean | symbol | null | undefined | Function;
 
-function recursiveFreeze<T extends number | string | boolean | symbol | null | undefined>(value: T): T;
-function recursiveFreeze<T extends number | string | boolean | symbol | null | undefined>(value: ReadonlyArrayInput<T>): readonly T[];
-function recursiveFreeze<T extends object>(value: ReadonlyArrayInput<ReadonlyObjectInput<T>>): ReadonlyArray<Readonly<T>>;
-function recursiveFreeze<T extends object>(value: ReadonlyObjectInput<T>): Readonly<T>;
+function recursiveFreeze<T extends PrimitiveType>(value: T): T;
+function recursiveFreeze<T extends PrimitiveType>(value: readonly T[]): readonly T[];
+function recursiveFreeze<T extends object>(value: ReadonlyArray<Readonly<T>>): ReadonlyArray<Readonly<T>>;
+function recursiveFreeze<T extends object>(value: Readonly<T>): Readonly<T>;
 function recursiveFreeze(value: unknown): unknown;
 function recursiveFreeze(value: never): never;
 function recursiveFreeze(value: any): any {
@@ -36,7 +29,7 @@ function recursiveFreeze(value: any): any {
     }
 
     switch (toString.call(value)) {
-        //Unfreezable types via toString()
+        // Unfreezable types via toString()
         case "[object Int8Array]":
         case "[object Int16Array]":
         case "[object Int32Array]":
@@ -54,7 +47,7 @@ function recursiveFreeze(value: any): any {
         case "[object XMLHttpRequest]":
             return value;
 
-        //No need to recurse
+        // No need to recurse
         case "[object Boolean]":
         case "[object Number]":
         case "[object String]":
@@ -105,7 +98,7 @@ const DELETE_VALUE: any = deepFreeze({});
 const REMOVE_VALUE: any = deepFreeze({});
 const REMOVE_VALUE_FN = valueFn(REMOVE_VALUE);
 
-function shallowCloneObject<T>(obj: T): T {
+function shallowCloneObject<T extends object>(obj: Readonly<T>): T {
     return Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
 }
 
@@ -121,7 +114,7 @@ function shallowCloneObject<T>(obj: T): T {
  * @param value the value
  * @returns a new (frozen) instance of the object with the property updated
  */
-export function object_set<K extends keyof T, T extends object>(obj: ReadonlyObjectInput<T>, prop: K, value: T[K]): Readonly<T> {
+export function object_set<K extends keyof T, T extends object>(obj: Readonly<T>, prop: K, value: T[K]): Readonly<T> {
     if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(prop in <any>obj) : obj[prop] === value) {
         return obj;
     }
@@ -149,7 +142,7 @@ export function object_set<K extends keyof T, T extends object>(obj: ReadonlyObj
  * @param prop the property to delete
  * @returns a new (frozen) instance of the object with the property deleted
  */
-export function object_delete<T extends object>(obj: ReadonlyObjectInput<T>, prop: keyof T): Readonly<T> {
+export function object_delete<T extends object>(obj: Readonly<T>, prop: keyof T): Readonly<T> {
     return object_set(obj, prop, DELETE_VALUE);
 }
 
@@ -197,7 +190,7 @@ export function object_assign(...sources: any[]) {
  * @param value the value
  * @returns a new (frozen) instance of the array with the specified `index` set to `value`
  */
-export function array_set<T>(arr: ReadonlyArrayInput<T>, index: number, value: T): readonly T[] {
+export function array_set<T>(arr: readonly T[], index: number, value: T): readonly T[] {
     if ((value === DELETE_VALUE || value === REMOVE_VALUE) ? !(index in arr) : arr[index] === value) {
         return arr;
     }
@@ -226,7 +219,7 @@ export function array_set<T>(arr: ReadonlyArrayInput<T>, index: number, value: T
  * @param index the index to delete
  * @returns a new (frozen) instance of the array with `index` `delete`ed
  */
-export function array_delete<T>(arr: ReadonlyArrayInput<T>, index: number): readonly T[] {
+export function array_delete<T>(arr: readonly T[], index: number): readonly T[] {
     return array_set<T>(arr, index, DELETE_VALUE);
 }
 
@@ -240,7 +233,7 @@ export function array_delete<T>(arr: ReadonlyArrayInput<T>, index: number): read
  * @param deleteCount the number of entries to remove (default: 1)
  * @returns a new (frozen) instance of the array with `deleteCount` entries removed at `index`
  */
-export function array_remove<T>(arr: ReadonlyArrayInput<T>, index: number, deleteCount = 1): readonly T[] {
+export function array_remove<T>(arr: readonly T[], index: number, deleteCount = 1): readonly T[] {
     if (arr.length <= index || deleteCount === 0) {
         return arr;
     }
@@ -264,7 +257,7 @@ function notEqualThis(this: any, x: any) {
  * @param value the value to remove from the array
  * @returns a new (frozen) instance of the array with `value` removed
  */
-export function array_exclude<T>(arr: ReadonlyArrayInput<T>, value: T): readonly T[] {
+export function array_exclude<T>(arr: readonly T[], value: T): readonly T[] {
     return array_filter(arr, notEqualThis, value);
 }
 
@@ -276,7 +269,7 @@ export function array_exclude<T>(arr: ReadonlyArrayInput<T>, value: T): readonly
  * @param newValue the new value
  * @returns a new (frozen) instance of the array with `oldValue` replaced with `newValue`
  */
-export function array_replace<T>(arr: ReadonlyArrayInput<T>, oldValue: T, newValue: T): readonly T[] {
+export function array_replace<T>(arr: readonly T[], oldValue: T, newValue: T): readonly T[] {
     FREEZING_ENABLED && deepFreeze(newValue);
 
     return array_map(arr, (v) => v === oldValue ? newValue : v);
@@ -289,7 +282,7 @@ export function array_replace<T>(arr: ReadonlyArrayInput<T>, oldValue: T, newVal
  * @param values the values to push
  * @returns a new (frozen) instance of the array with the values pushed
  */
-export function array_push<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): readonly T[] {
+export function array_push<T>(arr: readonly T[], ...values: T[]): readonly T[] {
     if (values.length === 0) {
         return arr;
     }
@@ -309,7 +302,7 @@ export function array_push<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): reado
  * @param arr the array
  * @returns a new (frozen) instance of the array with an entry shifted
  */
-export function array_shift<T>(arr: ReadonlyArrayInput<T>): readonly T[] {
+export function array_shift<T>(arr: readonly T[]): readonly T[] {
     if (arr.length === 0) {
         return arr;
     }
@@ -328,7 +321,7 @@ export function array_shift<T>(arr: ReadonlyArrayInput<T>): readonly T[] {
  * @param arr the array
  * @returns a new (frozen) instance of the array with an entry popped
  */
-export function array_pop<T>(arr: ReadonlyArrayInput<T>): readonly T[] {
+export function array_pop<T>(arr: readonly T[]): readonly T[] {
     if (arr.length === 0) {
         return arr;
     }
@@ -344,7 +337,7 @@ export function array_pop<T>(arr: ReadonlyArrayInput<T>): readonly T[] {
  * @param arr the array
  * @returns a new (frozen) instance of the array with the `values` `unshift`ed
  */
-export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): readonly T[] {
+export function array_unshift<T>(arr: readonly T[], ...values: T[]): readonly T[] {
     if (values.length === 0) {
         return arr;
     }
@@ -364,7 +357,7 @@ export function array_unshift<T>(arr: ReadonlyArrayInput<T>, ...values: T[]): re
  * @param end the end of the slice (default: the end)
  * @returns a slice of the array
  */
-export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: number): readonly T[] {
+export function array_slice<T>(arr: readonly T[], start: number, end?: number): readonly T[] {
     if (start === 0 && (end === undefined || arr.length <= end)) {
         return arr;
     }
@@ -382,7 +375,7 @@ export function array_slice<T>(arr: ReadonlyArrayInput<T>, start: number, end?: 
  * @param values the values to insert
  * @returns a new (frozen) instance of the array with the `values` inserted at `index`
  */
-export function array_insert<T>(arr: ReadonlyArrayInput<T>, index: number, ...values: T[]): readonly T[] {
+export function array_insert<T>(arr: readonly T[], index: number, ...values: T[]): readonly T[] {
     if (values.length === 0) {
         return arr;
     }
@@ -402,12 +395,12 @@ export function array_insert<T>(arr: ReadonlyArrayInput<T>, index: number, ...va
  * @param context the context to execute `callbackFn`
  * @returns a new mapped array
  */
-export function array_map<T, U = unknown, C = unknown>(arr: ReadonlyArrayInput<T>, callbackFn: (value: T, index: number, array: readonly T[]) => U, context?: C): readonly U[] {
+export function array_map<T, U = unknown, C = unknown>(arr: readonly T[], callbackFn: (value: T, index: number, array: readonly T[]) => U, context?: C): readonly U[] {
     if (arr.length === 0) {
         return arr as any;
     }
 
-    const mapped: U[] = (arr as readonly T[]).map(callbackFn, context);
+    const mapped: U[] = arr.map(callbackFn, context);
     FREEZING_ENABLED && deepFreeze(mapped);
     return mapped;
 }
@@ -420,12 +413,12 @@ export function array_map<T, U = unknown, C = unknown>(arr: ReadonlyArrayInput<T
  * @param context the context to execute `filterFn`
  * @returns a new filtered array
  */
-export function array_filter<T, C = unknown>(arr: ReadonlyArrayInput<T>, filterFn: (value: T, index: number, array: readonly T[]) => unknown, context?: C): readonly T[] {
+export function array_filter<T, C = unknown>(arr: readonly T[], filterFn: (value: T, index: number, array: readonly T[]) => unknown, context?: C): readonly T[] {
     if (arr.length === 0) {
         return arr;
     }
 
-    const filtered = (arr as readonly T[]).filter(filterFn, context);
+    const filtered = arr.filter(filterFn, context);
     const newArr = (filtered.length === arr.length) ? arr : filtered;
     FREEZING_ENABLED && shallowFreeze(newArr);
     return newArr;
@@ -442,7 +435,7 @@ function arrayEqualsThis<T>(this: readonly T[], o: T, i: number) {
  * @param sortFn the sort comparison function
  * @returns a new sorted array
  */
-export function array_sort<T>(arr: ReadonlyArrayInput<T>, sortFn: (a: T, b: T) => number): readonly T[] {
+export function array_sort<T>(arr: readonly T[], sortFn: (a: T, b: T) => number): readonly T[] {
     if (arr.length <= 1) {
         return arr;
     }
@@ -468,7 +461,7 @@ export function array_sort<T>(arr: ReadonlyArrayInput<T>, sortFn: (a: T, b: T) =
  * @param factory the value factory method
  * @returns a new (frozen) instance of the array with the `index` set to the `factory` method result
  */
-export function write<T>(array: ReadonlyArrayInput<T>, index: number | [number], factory: (oldValue: T, array: readonly T[]) => T): readonly T[];
+export function write<T>(array: readonly T[], index: number | [number], factory: (oldValue: T, array: readonly T[]) => T): readonly T[];
 /**
  * Set an object value within an array via factory method.
  *
@@ -477,7 +470,7 @@ export function write<T>(array: ReadonlyArrayInput<T>, index: number | [number],
  * @param factory the value factory method
  * @returns a new (frozen) instance of the array+object with the `path` set to the `factory` method result
  */
-export function write<K1 extends keyof T, T extends object>(array: ReadonlyArrayInput<T>, path: [number, K1], factory: (oldValue: T[K1], array: readonly T[]) => T[K1]): readonly T[];
+export function write<K1 extends keyof T, T extends object>(array: readonly T[], path: [number, K1], factory: (oldValue: T[K1], array: readonly T[]) => T[K1]): readonly T[];
 /**
  * Set an object deep value within an array via factory method.
  *
@@ -486,7 +479,7 @@ export function write<K1 extends keyof T, T extends object>(array: ReadonlyArray
  * @param factory the value factory method
  * @returns a new (frozen) instance of the array+objects with the `path` set to the `factory` method result
  */
-export function write<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(array: ReadonlyArrayInput<T>, path: [number, K1, K2], factory: (oldValue: T[K1][K2], array: readonly T[]) => T[K1][K2]): readonly T[];
+export function write<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(array: readonly T[], path: [number, K1, K2], factory: (oldValue: T[K1][K2], array: readonly T[]) => T[K1][K2]): readonly T[];
 /**
  * Set an object deep value within an array via factory method.
  *
@@ -495,7 +488,7 @@ export function write<K1 extends keyof T, K2 extends keyof T[K1], T extends obje
  * @param factory the value factory method
  * @returns a new (frozen) instance of the array+objects with the `path` set to the `factory` method result
  */
-export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(array: ReadonlyArrayInput<T>, path: [number, K1, K2, K3], factory: (oldValue: T[K1][K2][K3], data: readonly T[]) => T[K1][K2][K3]): readonly T[];
+export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(array: readonly T[], path: [number, K1, K2, K3], factory: (oldValue: T[K1][K2][K3], data: readonly T[]) => T[K1][K2][K3]): readonly T[];
 /**
  * Set an object deep value within an array via factory method.
  *
@@ -504,7 +497,7 @@ export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends key
  * @param factory the value factory method
  * @returns a new (frozen) instance of the array+objects with the `path` set to the `factory` method result
  */
-export function write<T>(array: ReadonlyArrayInput<T>, path: Array<string | number>, factory: (oldValue: any, array: readonly T[]) => any): readonly T[];
+export function write<T>(array: readonly T[], path: Array<string | number>, factory: (oldValue: any, array: readonly T[]) => any): readonly T[];
 /**
  * Set an object value via factory method.
  *
@@ -513,7 +506,7 @@ export function write<T>(array: ReadonlyArrayInput<T>, path: Array<string | numb
  * @param factory the value factory method
  * @returns a new (frozen) instance of the object with the `key` set to the `factory` method result
  */
-export function write<K1 extends keyof T, T extends object>(object: ReadonlyObjectInput<T>, key: K1 | [K1], factory: (oldValue: T[K1], object: Readonly<T>) => T[K1]): Readonly<T>;
+export function write<K1 extends keyof T, T extends object>(object: Readonly<T>, key: K1 | [K1], factory: (oldValue: T[K1], object: Readonly<T>) => T[K1]): Readonly<T>;
 /**
  * Set an object deep value via factory method.
  *
@@ -522,7 +515,7 @@ export function write<K1 extends keyof T, T extends object>(object: ReadonlyObje
  * @param factory the value factory method
  * @returns a new (frozen) instance of the objects with the `key` set to the `factory` method result
  */
-export function write<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2], factory: (oldValue: T[K1][K2], object: Readonly<T>) => T[K1][K2]): Readonly<T>;
+export function write<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: Readonly<T>, path: [K1, K2], factory: (oldValue: T[K1][K2], object: Readonly<T>) => T[K1][K2]): Readonly<T>;
 /**
  * Set an object deep value via factory method.
  *
@@ -531,7 +524,7 @@ export function write<K1 extends keyof T, K2 extends keyof T[K1], T extends obje
  * @param factory the value factory method
  * @returns a new (frozen) instance of the objects with the `key` set to the `factory` method result
  */
-export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2, K3], factory: (oldValue: T[K1][K2][K3], object: Readonly<T>) => T[K1][K2][K3]): Readonly<T>;
+export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: Readonly<T>, path: [K1, K2, K3], factory: (oldValue: T[K1][K2][K3], object: Readonly<T>) => T[K1][K2][K3]): Readonly<T>;
 /**
  * Set an object deep value via factory method.
  *
@@ -540,7 +533,7 @@ export function write<K1 extends keyof T, K2 extends keyof T[K1], K3 extends key
  * @param factory the value factory method
  * @returns a new (frozen) instance of the objects with the `key` set to the `factory` method result
  */
-export function write<T extends object>(object: ReadonlyObjectInput<T>, path: Array<string | number>, factory: (oldValue: any, data: Readonly<T>) => any): Readonly<T>;
+export function write<T extends object>(object: Readonly<T>, path: Array<string | number>, factory: (oldValue: any, data: Readonly<T>) => any): Readonly<T>;
 export function write<T>(data: T, pathOrKey: Array<string | number> | number | keyof T, factory: Function) {
     const path = Array.isArray(pathOrKey) ? pathOrKey : [pathOrKey];
 
@@ -560,15 +553,15 @@ export function write<T>(data: T, pathOrKey: Array<string | number> | number | k
 
     //Write the new immutable data back into the objects
     for (let i = objs.length - 2; i >= 0; i--) {
-        const key = path[i];
+        const key = path[i] as any;
         const obj = objs[i];
         const val = objs[i + 1];
 
         if (Array.isArray(obj)) {
-            objs[i] = array_set(obj, <number>key, val);
+            objs[i] = array_set(obj, key, val);
         }
         else {
-            objs[i] = object_set(obj, <string>key, val);
+            objs[i] = object_set<any, any>(obj, key, val);
         }
     }
 
@@ -593,7 +586,7 @@ function read(data: any, path: Array<string | number>) {
  * @param value the value
  * @returns a new (frozen) instance of the array with the `index` set to the `value`
  */
-export function writeValue<T>(array: ReadonlyArrayInput<T>, index: number | [number], value: T): readonly T[];
+export function writeValue<T>(array: readonly T[], index: number | [number], value: T): readonly T[];
 /**
  * Set an object value within an array.
  *
@@ -602,7 +595,7 @@ export function writeValue<T>(array: ReadonlyArrayInput<T>, index: number | [num
  * @param value the value
  * @returns a new (frozen) instance of the object+array with the `index` set to the `value`
  */
-export function writeValue<K1 extends keyof T, T>(array: ReadonlyArrayInput<T>, path: [number, K1], value: T[K1]): readonly T[];
+export function writeValue<K1 extends keyof T, T>(array: readonly T[], path: [number, K1], value: T[K1]): readonly T[];
 /**
  * Set a nested object value within an array.
  *
@@ -611,7 +604,7 @@ export function writeValue<K1 extends keyof T, T>(array: ReadonlyArrayInput<T>, 
  * @param value the value
  * @returns a new (frozen) instance of the object+array with the `index` set to the `value`
  */
-export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T>(array: ReadonlyArrayInput<T>, path: [number, K1, K2], value: T[K1][K2]): readonly T[];
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T>(array: readonly T[], path: [number, K1, K2], value: T[K1][K2]): readonly T[];
 /**
  * Set a nested object value within an array.
  *
@@ -620,7 +613,7 @@ export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T>(array:
  * @param value the value
  * @returns a new (frozen) instance of the object+array with the `index` set to the `value`
  */
-export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(array: ReadonlyArrayInput<T>, path: [number, K1, K2, K3], value: T[K1][K2][K3]): readonly T[];
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(array: readonly T[], path: [number, K1, K2, K3], value: T[K1][K2][K3]): readonly T[];
 /**
  * Set a nested object value within an array.
  *
@@ -629,7 +622,7 @@ export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extend
  * @param value the value
  * @returns a new (frozen) instance of the object+array with the `index` set to the `value`
  */
-export function writeValue<T>(array: ReadonlyArrayInput<T>, path: Array<string | number>, value: any): readonly T[];
+export function writeValue<T>(array: readonly T[], path: Array<string | number>, value: any): readonly T[];
 /**
  * Set an object value. Equivelent to `object_set`.
  *
@@ -638,7 +631,7 @@ export function writeValue<T>(array: ReadonlyArrayInput<T>, path: Array<string |
  * @param value the value
  * @returns a new (frozen) instance of the object with the `key` set to the `value`
  */
-export function writeValue<K1 extends keyof T, T extends object>(object: ReadonlyObjectInput<T>, key: K1 | [K1], value: T[K1]): Readonly<T>;
+export function writeValue<K1 extends keyof T, T extends object>(object: Readonly<T>, key: K1 | [K1], value: T[K1]): Readonly<T>;
 /**
  * Set a nested object value.
  *
@@ -647,7 +640,7 @@ export function writeValue<K1 extends keyof T, T extends object>(object: Readonl
  * @param value the value
  * @returns a new (frozen) instance of the object with the `path` set to the `value`
  */
-export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2], value: T[K1][K2]): Readonly<T>;
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: Readonly<T>, path: [K1, K2], value: T[K1][K2]): Readonly<T>;
 /**
  * Set a nested object value.
  *
@@ -656,7 +649,7 @@ export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], T extends
  * @param value the value
  * @returns a new (frozen) instance of the object with the `path` set to the `value`
  */
-export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2, K3], value: T[K1][K2][K3]): Readonly<T>;
+export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: Readonly<T>, path: [K1, K2, K3], value: T[K1][K2][K3]): Readonly<T>;
 /**
  * Set a nested object value.
  *
@@ -665,7 +658,7 @@ export function writeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extend
  * @param value the value
  * @returns a new (frozen) instance of the object with the `path` set to the `value`
  */
-export function writeValue<T extends object>(object: ReadonlyObjectInput<T>, path: Array<string | number>, value: any): Readonly<T>;
+export function writeValue<T extends object>(object: Readonly<T>, path: Array<string | number>, value: any): Readonly<T>;
 export function writeValue<T extends object>(data: T, pathOrKey: Array<string | number> | number | keyof T, value: any) {
     return write<T>(data, <any>pathOrKey, valueFn(value));
 }
@@ -679,7 +672,7 @@ export function writeValue<T extends object>(data: T, pathOrKey: Array<string | 
  * @param values the values to merge
  * @returns a new (frozen) instance of the object+array with the `values` merged in
  */
-export function writeValues<T>(array: ReadonlyArrayInput<T>, index: number | [number], values: Partial<T>): readonly T[];
+export function writeValues<T>(array: readonly T[], index: number | [number], values: Partial<T>): readonly T[];
 /**
  * Merge values into an object within an array.
  *
@@ -688,7 +681,7 @@ export function writeValues<T>(array: ReadonlyArrayInput<T>, index: number | [nu
  * @param values the values to merge
  * @returns a new (frozen) instance of the object+array with the `values` merged in
  */
-export function writeValues<K1 extends keyof T, T>(array: ReadonlyArrayInput<T>, path: [number, K1], values: Partial<T[K1]>): readonly T[];
+export function writeValues<K1 extends keyof T, T>(array: readonly T[], path: [number, K1], values: Partial<T[K1]>): readonly T[];
 /**
  * Merge values into an object deep within an array.
  *
@@ -697,7 +690,7 @@ export function writeValues<K1 extends keyof T, T>(array: ReadonlyArrayInput<T>,
  * @param values the values to merge
  * @returns a new (frozen) instance of the object+array with the `values` merged in
  */
-export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T>(array: ReadonlyArrayInput<T>, path: [number, K1, K2], values: Partial<T[K1][K2]>): readonly T[];
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T>(array: readonly T[], path: [number, K1, K2], values: Partial<T[K1][K2]>): readonly T[];
 /**
  * Merge values into an object deep within an array.
  *
@@ -706,7 +699,7 @@ export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T>(array
  * @param values the values to merge
  * @returns a new (frozen) instance of the object+array with the `values` merged in
  */
-export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(array: ReadonlyArrayInput<T>, path: [number, K1, K2, K3], values: Partial<T[K1][K2][K3]>): readonly T[];
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(array: readonly T[], path: [number, K1, K2, K3], values: Partial<T[K1][K2][K3]>): readonly T[];
 /**
  * Merge values into an object deep within an array.
  *
@@ -715,7 +708,7 @@ export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 exten
  * @param values the values to merge
  * @returns a new (frozen) instance of the object+array with the `values` merged in
  */
-export function writeValues<T>(array: ReadonlyArrayInput<T>, path: Array<string | number>, values: {[k: string]: any}): readonly T[];
+export function writeValues<T>(array: readonly T[], path: Array<string | number>, values: {[k: string]: any}): readonly T[];
 /**
  * Merge values into an object. Equivelent to `object_assign`.
  *
@@ -724,7 +717,7 @@ export function writeValues<T>(array: ReadonlyArrayInput<T>, path: Array<string 
  * @param values the values to merge
  * @returns a new (frozen) instance of the object with the `values` merged in
  */
-export function writeValues<K1 extends keyof T, T extends object>(object: ReadonlyObjectInput<T>, key: K1 | [K1], values: Partial<T[K1]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, T extends object>(object: Readonly<T>, key: K1 | [K1], values: Partial<T[K1]>): Readonly<T>;
 /**
  * Merge values into a nested object.
  *
@@ -733,7 +726,7 @@ export function writeValues<K1 extends keyof T, T extends object>(object: Readon
  * @param values the values to merge
  * @returns a new (frozen) instance of the object with the `values` merged in
  */
-export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2], values: Partial<T[K1][K2]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: Readonly<T>, path: [K1, K2], values: Partial<T[K1][K2]>): Readonly<T>;
 /**
  * Merge values into a nested object.
  *
@@ -742,7 +735,7 @@ export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], T extend
  * @param values the values to merge
  * @returns a new (frozen) instance of the object with the `values` merged in
  */
-export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2, K3], values: Partial<T[K1][K2][K3]>): Readonly<T>;
+export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: Readonly<T>, path: [K1, K2, K3], values: Partial<T[K1][K2][K3]>): Readonly<T>;
 /**
  * Merge values into a nested object.
  *
@@ -751,7 +744,7 @@ export function writeValues<K1 extends keyof T, K2 extends keyof T[K1], K3 exten
  * @param values the values to merge
  * @returns a new (frozen) instance of the object with the `values` merged in
  */
-export function writeValues<T extends object>(object: ReadonlyObjectInput<T>, path: Array<string | number>, values: {[k: string]: any}): Readonly<T>;
+export function writeValues<T extends object>(object: Readonly<T>, path: Array<string | number>, values: {[k: string]: any}): Readonly<T>;
 export function writeValues<T extends object>(data: T, pathOrKey: Array<string | number> | number | keyof T, values: {[k: string]: any}) {
     const path = Array.isArray(pathOrKey) ? pathOrKey : [<string | number>pathOrKey];
     const oldValue = read(data, path);
@@ -767,7 +760,7 @@ export function writeValues<T extends object>(data: T, pathOrKey: Array<string |
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object+array with the `path` `delete`ed
  */
-export function removeValue<K1 extends keyof T, T>(array: ReadonlyArrayInput<T>, path: [number, K1]): readonly T[];
+export function removeValue<K1 extends keyof T, T>(array: readonly T[], path: [number, K1]): readonly T[];
 /**
  * `delete` an entry from an object within an array.
  *
@@ -775,7 +768,7 @@ export function removeValue<K1 extends keyof T, T>(array: ReadonlyArrayInput<T>,
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object+array with the `path` `delete`ed
  */
-export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T>(array: ReadonlyArrayInput<T>, path: [number, K1, K2]): readonly T[];
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T>(array: readonly T[], path: [number, K1, K2]): readonly T[];
 /**
  * `delete` an entry from an object within an array.
  *
@@ -783,7 +776,7 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T>(array
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object+array with the `path` `delete`ed
  */
-export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(array: ReadonlyArrayInput<T>, path: [number, K1, K2, K3]): readonly T[];
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T>(array: readonly T[], path: [number, K1, K2, K3]): readonly T[];
 /**
  * `delete` an entry from an object within an array.
  *
@@ -791,7 +784,7 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 exten
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object+array with the `path` `delete`ed
  */
-export function removeValue<T>(array: ReadonlyArrayInput<T>, path: Array<string | number>): readonly T[];
+export function removeValue<T>(array: readonly T[], path: Array<string | number>): readonly T[];
 /**
  * `delete` an entry from an object. Equivelent to `object_delete`.
  *
@@ -799,7 +792,7 @@ export function removeValue<T>(array: ReadonlyArrayInput<T>, path: Array<string 
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object with the `path` `delete`ed
  */
-export function removeValue<K1 extends keyof T, T extends object>(object: ReadonlyObjectInput<T>, path: K1 | [K1]): Readonly<T>;
+export function removeValue<K1 extends keyof T, T extends object>(object: Readonly<T>, path: K1 | [K1]): Readonly<T>;
 /**
  * `delete` a nested entry from an object.
  *
@@ -807,7 +800,7 @@ export function removeValue<K1 extends keyof T, T extends object>(object: Readon
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object with the `path` `delete`ed
  */
-export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2]): Readonly<T>;
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T extends object>(object: Readonly<T>, path: [K1, K2]): Readonly<T>;
 /**
  * `delete` a nested entry from an object.
  *
@@ -815,7 +808,7 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], T extend
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object with the `path` `delete`ed
  */
-export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: ReadonlyObjectInput<T>, path: [K1, K2, K3]): Readonly<T>;
+export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2], T extends object>(object: Readonly<T>, path: [K1, K2, K3]): Readonly<T>;
 /**
  * `delete` a nested entry from an object.
  *
@@ -823,7 +816,7 @@ export function removeValue<K1 extends keyof T, K2 extends keyof T[K1], K3 exten
  * @param path the path to the entry
  * @returns a new (frozen) instance of the object with the `path` `delete`ed
  */
-export function removeValue<T extends object>(object: ReadonlyObjectInput<T>, path: Array<string | number>): Readonly<T>;
+export function removeValue<T extends object>(object: Readonly<T>, path: Array<string | number>): Readonly<T>;
 export function removeValue<T extends object>(data: T, pathOrKey: Array<string | number> | keyof T) {
     return write<T>(data, <any>pathOrKey, REMOVE_VALUE_FN);
 }
@@ -837,7 +830,7 @@ export function removeValue<T extends object>(data: T, pathOrKey: Array<string |
  * @param keys the properties to `delete`
  * @returns a new (frozen) instance of the object with all `keys` deleted
  */
-export function removeValues<T extends object>(data: ReadonlyObjectInput<T>, ...keys: Array<keyof T>): Readonly<T> {
+export function removeValues<T extends object>(data: Readonly<T>, ...keys: Array<keyof T>): Readonly<T> {
     let newValue: T | undefined;
 
     for (const key of keys) {

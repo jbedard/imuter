@@ -55,6 +55,12 @@ expectType<never>(imuter(typeNever))
 
 expectType<string | undefined>(imuter(optionalStr))
 
+expectType<number>(imuter(Number(0)))
+
+expectType<boolean>(imuter(Boolean(true)))
+
+expectType<string>(imuter(String("foo")))
+
 expectType<readonly 5[]>(imuter([5]))
 
 expectType<readonly number[]>(imuter([num]))
@@ -117,19 +123,21 @@ expectType<Readonly<NestedType>>(imuter(nestedType))
 
 expectType<Readonly<NestedType>>(imuter(imuter(nestedType)))
 
-expectType<Readonly<typeof Clazz>>(imuter(Clazz))
+expectType<typeof Clazz>(imuter(Clazz))
 
-expectType<Readonly<(c: Clazz) => Clazz>>(imuter(identityC))
+expectType<(c: Clazz) => Clazz>(imuter(identityC))
 
 expectType<Readonly<NestedType>>(imuter(nestedType))
 
 expectType<Readonly<NestedType>>(imuter(imuter(nestedType)))
 
-expectType<Readonly<typeof Clazz>>(imuter(Clazz))
+expectType<typeof Clazz>(imuter(Clazz))
 
-expectType<Readonly<(c: Clazz) => Clazz>>(imuter(identityC))
+expectType<(c: Clazz) => Clazz>(imuter(identityC))
 
-expectType<Readonly<(c: Clazz) => Clazz>>(imuter(imuter(identityC)))
+expectType<(c: Clazz) => Clazz>(imuter(imuter(identityC)))
+
+expectType<Readonly<RegExp>>(imuter(/foo/));
 
 // Array ------------------------------------------------------------------------------------------
 
@@ -139,6 +147,8 @@ expectType<ReadonlyArray<number>>(array_set([3], 0, 1))
 expectType<ReadonlyArray<number>>(array_set(Object.freeze([3]), 0, 1))
 
 expectError(array_set([3], 0, "s"));
+
+expectError(array_set([{}], 0, 1));
 
 // array_delete
 expectType<ReadonlyArray<3>>(array_delete([3], 1))

@@ -511,7 +511,7 @@ describe("array_set", function() {
     });
 
     it("should support already-frozen arrays", function() {
-        array_set(imuter([{}]), 0, 1);
+        array_set(imuter([0]), 0, 1);
     });
 
     it("should support array of frozen objects", function() {
