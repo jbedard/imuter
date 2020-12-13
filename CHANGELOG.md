@@ -1,3 +1,12 @@
+# [0.8.0](https://github.com/jbedard/imuter/compare/v0.7.0...v0.8.0) (2020-12-13)
+
+
+### Bug Fixes
+
+* **array:** avoid returning new object when operations noop ([42e32bc](https://github.com/jbedard/imuter/commit/42e32bcb161b8e6406b1ba94536467cef81f5c14))
+
+
+
 # [0.7.0](https://github.com/jbedard/imuter/compare/v0.6.0...v0.7.0) (2020-08-05)
 
 
