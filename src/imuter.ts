@@ -272,7 +272,11 @@ export function array_exclude<T>(arr: readonly T[], value: T): readonly T[] {
 export function array_replace<T>(arr: readonly T[], oldValue: T, newValue: T): readonly T[] {
     FREEZING_ENABLED && deepFreeze(newValue);
 
-    return array_map(arr, (v) => v === oldValue ? newValue : v);
+    let found = false;
+
+    const n = array_map(arr, v => v === oldValue ? (found = true) && newValue : v);
+
+    return found ? n : arr;
 }
 
 /**

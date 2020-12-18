@@ -603,6 +603,12 @@ describe("array_replace", function() {
         expect(a).toBe(i);
     });
 
+    it("should be a noop when nothing is replaced", function() {
+        const i = [0, 1, 0, 2, 0];
+        const a = array_replace(i, 42, 1);
+        expect(a).toBe(i);
+    });
+
     it("should freeze the new value", function() {
         const i = [{}];
         const nv = {};
