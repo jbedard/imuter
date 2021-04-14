@@ -1,0 +1,16 @@
+{
+    "compress": {
+      "global_defs": {
+        "FREEZING_ENABLED": "false",
+        "process": "{}",
+        "process.env.NODE_ENV": "production"
+      },
+      "passes": 2,
+      "pure_getters": true,
+      "sequences": false
+    },
+  
+    "mangle": true,
+    "toplevel": false
+  }
+  

@@ -3,7 +3,7 @@
 "use strict";
 
 //Should be determined at compile time to allow tree-shaking
-const FREEZING_ENABLED = typeof process !== "undefined" && process.env.NODE_ENV !== "production";
+const FREEZING_ENABLED = !(typeof process !== "undefined" && process.env.NODE_ENV === "production");
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const toString = {}.toString;

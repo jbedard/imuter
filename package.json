@@ -51,7 +51,7 @@
     "compile.amd": "tsc --module amd --target es5 --outDir dist/amd",
     "compile.commonjs": "tsc --module commonjs --target es5 --outDir dist/",
     "compile.bundle": "tsc --module umd --target es5 --outDir dist/bundles",
-    "terser": "terser -c -m --toplevel --define process.env.NODE_ENV='\"production\"' --define FREEZING_ENABLED=false --source-map 'content=dist/bundles/imuter.js.map' -o dist/bundles/imuter.min.js dist/bundles/imuter.js",
+    "terser": "terser --config-file ./terser.config.json --source-map 'content=dist/bundles/imuter.js.map' -o dist/bundles/imuter.min.js dist/bundles/imuter.js",
     "test": "karma start karma.conf.js --single-run --browsers ChromeHeadless",
     "test-server": "karma start karma.conf.js",
     "test-dts": "tsd type-specs",
