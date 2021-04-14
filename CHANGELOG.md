@@ -1,3 +1,12 @@
+## [0.8.3](https://github.com/jbedard/imuter/compare/v0.8.2...v0.8.3) (2021-04-14)
+
+
+### Performance Improvements
+
+* improve tree-shaking of browser bundle ([d129a8e](https://github.com/jbedard/imuter/commit/d129a8ea92f8b9ea37de4c05f1a4bc5f920da0f5))
+
+
+
 # [0.8.0](https://github.com/jbedard/imuter/compare/v0.7.0...v0.8.0) (2020-12-13)
 
 
